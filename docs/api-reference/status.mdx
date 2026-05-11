@@ -1,0 +1,37 @@
+---
+title: GET /
+description: "Status snapshot."
+---
+
+```http
+GET /
+Authorization: Bearer <token>
+```
+
+## Response
+
+```json
+{
+  "name": "Wirebody",
+  "version": "1.0",
+  "workoutCount": 124,
+  "sampleEncoding": "columnar-v1"
+}
+```
+
+## Example
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://192.168.1.244:5606/
+```
+
+## Fields
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `name` | string | Always `"Wirebody"` |
+| `version` | string | App `CFBundleShortVersionString` |
+| `workoutCount` | integer | Total workouts visible via HealthKit |
+| `sampleEncoding` | string | Wire-format discriminator (`"columnar-v1"`) |
+
+`workoutCount` is the same number `list_workouts` will report under `total`.

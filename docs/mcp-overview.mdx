@@ -1,0 +1,77 @@
+---
+title: MCP integration
+description: "The wirebody-mcp server bridges the LAN endpoints to any MCP-aware agent."
+---
+
+[`wirebody-mcp`](https://github.com/alpinevm/wirebody) is a tiny TypeScript stdio MCP server that exposes the LAN endpoints as agent tools. It's MIT-licensed, runs locally on the agent's machine via `npx`, and contains zero server state — every tool call is a thin HTTP proxy to the iPhone.
+
+```
+[ Claude Code / Codex / Cursor / Zed / Continue / ... ]
+                │  stdio JSON-RPC (Model Context Protocol)
+                ▼
+        wirebody-mcp (Node, MIT)
+                │  HTTP + bearer
+                ▼
+       Wirebody iOS app on your LAN
+```
+
+## Install + configure
+
+The canonical agent-config block works across Claude Code, Codex, Cursor, Continue, Zed, and other MCP-aware harnesses:
+
+```json
+{
+  "mcpServers": {
+    "wirebody": {
+      "command": "npx",
+      "args": ["-y", "wirebody-mcp"],
+      "env": {
+        "WIREBODY_URL": "http://192.168.1.244:5606",
+        "WIREBODY_TOKEN": "oRjUmrdnbrK8reAtGpDIvq"
+      }
+    }
+  }
+}
+```
+
+- **`WIREBODY_URL`** (required) — the URL shown in Wirebody's Settings → Local LAN Server row.
+- **`WIREBODY_TOKEN`** (optional) — the bearer token shown next to the URL. Omit if **Require auth** is off.
+
+The iOS app must be foregrounded with the LAN server toggled on for any tool call to succeed.
+
+## Tools
+
+| Tool | Input | Output |
+| --- | --- | --- |
+| `status` | none | `{ name, version, workoutCount, sampleEncoding }` |
+| `list_workouts` | `limit?` (1-200, default 50), `offset?` (default 0) | Paginated workout summaries, newest first |
+| `get_workout` | `uuid` (string, required) | Full `WorkoutDetail` JSON (columnar-v1) |
+| `list_quantity_types` | none | Catalog of standalone HealthKit quantity types with sample counts |
+| `get_quantity_series` | `type` (string, required), `from?`, `to?`, `limit?` (1-50000, default 5000), `offset?` (default 0) | Columnar quantity series for a date range |
+| `list_sleep_sessions` | `from?`, `to?`, `limit?` (1-365, default 30), `offset?` (default 0) | Reconciled nightly sessions with phase intervals |
+| `get_day_snapshot` | `date` (YYYY-MM-DD, required) | Single-day overview matching the iOS Day view numbers exactly |
+
+Each tool returns the response body verbatim — bytes identical to what the LAN server emits. The MCP does no caching, no transformation, no schema translation.
+
+## Errors
+
+The MCP surfaces meaningful tool errors so agents can recover gracefully:
+
+| Error | Cause | Suggested agent action |
+| --- | --- | --- |
+| `Unauthorized` | Token missing or wrong | Ask the user to re-copy the token from Settings |
+| `NotFound` | UUID or path doesn't exist | Surface verbatim |
+| `Unreachable` | iOS app is closed/backgrounded, server toggle off, or wrong URL | Ask the user to open Wirebody |
+| `ServerError` | Internal 5xx | Surface; usually transient |
+| `BadDate` | Date param malformed (snapshot only) | Re-format and retry |
+
+## What the MCP is not
+
+- **Not a backend.** It's a stateless proxy; the iPhone is the source of truth.
+- **Not a writeback layer.** Read-only tools. No `create_workout`, `update_*`, or `delete_*`.
+- **Not a cache.** Every call hits the LAN server. Latency is dominated by the LAN round-trip and the HealthKit query — typically 50-500 ms for `get_workout`, single-digit ms for `status`.
+- **Not exclusive to Claude.** Any MCP-compliant client works. Tested with Claude Code, Codex, Cursor; should work anywhere `@modelcontextprotocol/sdk` reads stdio.
+
+## Source
+
+[github.com/alpinevm/wirebody-mcp](https://github.com/alpinevm/wirebody). MIT-licensed. Issues and PRs welcome.

@@ -1,0 +1,57 @@
+---
+title: GET /workouts
+description: "Paginated workout summaries, newest first."
+---
+
+```http
+GET /workouts?limit=50&offset=0
+Authorization: Bearer <token>
+```
+
+## Query parameters
+
+| Name | Type | Default | Range | Notes |
+| --- | --- | --- | --- | --- |
+| `limit` | integer | `50` | 1-200 | Clamped silently if out of range |
+| `offset` | integer | `0` | ≥ 0 | Garbage values clamp to 0 |
+
+## Response
+
+```json
+{
+  "workouts": [
+    {
+      "uuid": "06E9D6D6-7E37-406C-8465-1DAAD7C223A1",
+      "workoutActivityType": "HKWorkoutActivityTypeRunning",
+      "startDate": "2026-05-09T16:11:50Z",
+      "endDate":   "2026-05-09T16:44:24Z",
+      "duration": 1953.68,
+      "totalDistance":     { "value": 4855.06, "unit": "m" },
+      "totalEnergyBurned": { "value": 482.62,  "unit": "kcal" },
+      "averageHeartRate":  { "value": 164.81,  "unit": "count/min" },
+      "metadata": { "HKIndoorWorkout": false, "HKWeatherTemperature": "70.7173 degF", ... },
+      "device": { ... },
+      "sourceRevision": { ... }
+    }
+  ],
+  "limit": 50,
+  "offset": 0,
+  "total": 124,
+  "hasMore": true
+}
+```
+
+## Example
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  "http://192.168.1.244:5606/workouts?limit=10&offset=0"
+```
+
+## Notes
+
+- Sorted by `startDate` descending.
+- Summaries include device + sourceRevision inline (no provenance hoisting at this layer — the list is intended as a quick browseable index, and per-summary provenance is rarely duplicated since users typically have one watch).
+- For full sample-series detail, follow up with [`GET /workouts/{uuid}`](/api-reference/get-workout).
+- `hasMore` is `true` iff `offset + workouts.length < total`.
+- An offset beyond the end returns an empty `workouts` array with `hasMore: false`. It does not 404.
