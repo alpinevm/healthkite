@@ -11,7 +11,7 @@ The iOS app itself is closed-source (for now); everything an integrator needs to
 | Directory | What it is |
 | --- | --- |
 | [`mcp/`](mcp/) | **`wirebody-mcp`** — TypeScript MCP server, MIT-licensed. Stdio transport, runs locally via `npx`. Bridges the LAN endpoints to any MCP-aware agent. |
-| [`docs/`](docs/) | Mintlify documentation site. Concepts, API reference, MCP integration guide. |
+| [`docs/`](docs/) | Astro Starlight documentation site. Concepts, API reference, MCP integration guide. |
 
 ## Quick start
 
@@ -34,6 +34,8 @@ The iOS app itself is closed-source (for now); everything an integrator needs to
 Open the Wirebody iOS app, toggle on **Local LAN Server** in Settings, copy the URL + token. Restart your agent.
 
 Full setup guide: [`docs/quickstart.mdx`](docs/quickstart.mdx).
+
+Docs are built with [Astro Starlight](https://starlight.astro.build/) and auto-deployed to GitHub Pages at https://alpinevm.github.io/wirebody/.
 
 ## Architecture
 
