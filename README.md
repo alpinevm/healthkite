@@ -35,7 +35,7 @@ Open the Wirebody iOS app, toggle on **Local LAN Server** in Settings, copy the 
 
 Full setup guide: [`docs/quickstart.mdx`](docs/quickstart.mdx).
 
-Docs are built with [Astro Starlight](https://starlight.astro.build/) and auto-deployed to GitHub Pages at https://alpinevm.github.io/wirebody/.
+Docs are built with [Astro Starlight](https://starlight.astro.build/) and hosted on Railway: https://wirebody-docs-production.up.railway.app/
 
 ## Architecture
 

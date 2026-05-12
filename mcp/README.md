@@ -72,7 +72,7 @@ The iOS app must be foregrounded with the LAN server toggle ON for tools to work
   "sources": [
     { "id": 0,
       "device": { "name": "Apple Watch", "model": "Watch", ... },
-      "sourceRevision": { "source": { "name": "Cliff's Apple Watch", "bundleIdentifier": "..." },
+      "sourceRevision": { "source": { "name": "My Apple Watch", "bundleIdentifier": "..." },
                           "version": "26.4", "productType": "Watch6,11", "operatingSystemVersion": "26.4.0" } }
   ],
   "samples": {

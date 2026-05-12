@@ -3,7 +3,7 @@ title: Provenance hoisting
 description: "device + sourceRevision live once in a top-level sources array; samples reference by integer index."
 ---
 
-Every HealthKit sample carries `device` and `sourceRevision` properties. At the Swift / in-memory layer those are references — one `HKDevice` instance for "Cliff's Apple Watch" can be shared by 5,000 samples. At the JSON layer there's no concept of references, so a naive encoding inlines those structs per sample.
+Every HealthKit sample carries `device` and `sourceRevision` properties. At the Swift / in-memory layer those are references — one `HKDevice` instance for "My Apple Watch" can be shared by 5,000 samples. At the JSON layer there's no concept of references, so a naive encoding inlines those structs per sample.
 
 Wirebody hoists provenance into a top-level `sources` array and replaces inline provenance with integer `src` indices.
 
@@ -24,7 +24,7 @@ Every response that contains sample-level data uses the same `sources` block:
     },
     "sourceRevision": {
       "source": {
-        "name": "Cliff's Apple Watch",
+        "name": "My Apple Watch",
         "bundleIdentifier": "com.apple.health.76CB32B3-FB98-41D2-BE82-46A492C2A369"
       },
       "version": "26.4",
@@ -36,7 +36,7 @@ Every response that contains sample-level data uses the same `sources` block:
     "id": 1,
     "device": null,
     "sourceRevision": {
-      "source": { "name": "Cliff's iPhone", "bundleIdentifier": "com.eightsleep.Eight" },
+      "source": { "name": "My iPhone", "bundleIdentifier": "com.eightsleep.Eight" },
       "version": "2",
       "productType": "iPhone15,4",
       "operatingSystemVersion": "26.4.2"
