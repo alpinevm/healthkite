@@ -1,19 +1,11 @@
 ---
 title: Wirebody
-sidebarTitle: Introduction
 description: "Apple HealthKit, exposed honestly as JSON. Free, open-source, agent-native."
+sidebar:
+  label: Introduction
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Wirebody hero"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Wirebody hero"
-/>
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
 **Wirebody** is an iOS app that turns your iPhone into a small read-only HTTP server for your own Apple Health data. Run it on your home Wi-Fi, point an AI agent or a script at it, and get clean HealthKit-native JSON back.
 
@@ -21,20 +13,20 @@ It is **free**, the wire format is **HealthKit-native** (Apple's own identifier 
 
 ## What you can do
 
-<CardGroup cols={2}>
-  <Card title="Ask an agent about your day" icon="message">
+<CardGrid>
+  <Card title="Ask an agent about your day">
     Drop the MCP config into your agent. Then ask things like *"How did I sleep last week?"* or *"Was my Sunday tempo run faster at the same heart rate than last week's?"* — the agent calls the LAN endpoints and answers.
   </Card>
-  <Card title="Share a workout to ChatGPT" icon="share">
+  <Card title="Share a workout to ChatGPT">
     Tap any workout → Share → ChatGPT. The receiving app gets the full columnar JSON, ~80 KB for a 30-minute run, byte-identical to what the LAN server returns.
   </Card>
-  <Card title="POST workouts to a webhook" icon="paper-plane">
+  <Card title="POST workouts to a webhook">
     Configure a push endpoint in Settings. Tapping a workout's Send to Endpoint POSTs the same JSON to your Home Assistant, n8n, or custom server.
   </Card>
-  <Card title="Bulk export a date range" icon="file-export">
+  <Card title="Bulk export a date range">
     The Export tab packages workouts, sleep sessions, quantity series, and daily snapshots between two dates into one JSON file, then hands it to the iOS share sheet.
   </Card>
-</CardGroup>
+</CardGrid>
 
 ## Why it exists
 
@@ -45,7 +37,7 @@ Apple HealthKit has no Apple-hosted API. If you want your data off the phone —
 - **HealthKit-native field names.** Every key in the JSON is Apple's own identifier (`HKQuantityTypeIdentifierHeartRate`, `HKWorkoutActivityTypeRunning`, `HKMetadataKeyHeartRateMotionContext`). Look them up in Apple's docs; no app-specific vocabulary.
 - **HealthKit-native units.** Quantities stay in the unit HealthKit handed us — meters, kilograms, count/min, kcal. No "lb vs kg" conversion at the wire layer. Display units are a separate concern for the iOS UI only.
 - **Lossless.** Per-sample resolution, no Min/Avg/Max bucketing, no aggregation tricks.
-- **Compact.** Sample series use a [columnar shape](/concepts/columnar-encoding) (`unit` + parallel `t` and `v` arrays) that's ~10x smaller than per-sample-dict JSON without losing a single value.
+- **Compact.** Sample series use a [columnar shape](concepts/columnar-encoding) (`unit` + parallel `t` and `v` arrays) that's ~10x smaller than per-sample-dict JSON without losing a single value.
 - **Read-only.** No writes back into HealthKit. The app cannot mutate your data.
 - **No backend.** The server lives on your phone. No cloud, no telemetry, no account. Your iPhone is the API.
 
@@ -72,17 +64,17 @@ Three pieces:
 
 ## Next steps
 
-<CardGroup cols={2}>
-  <Card title="Quickstart" icon="rocket" href="/quickstart">
+<CardGrid>
+  <Card title="Quickstart" href="quickstart">
     Toggle on the LAN server, install the MCP, and ask your first agent question — in under 3 minutes.
   </Card>
-  <Card title="Wire format" icon="code" href="/concepts/wire-format">
+  <Card title="Wire format" href="concepts/wire-format">
     The design rules behind the JSON shape: HealthKit-native vocabulary, columnar samples, hoisted provenance.
   </Card>
-  <Card title="API reference" icon="square-terminal" href="/api-reference/overview">
+  <Card title="API reference" href="api-reference/overview">
     Every endpoint with request shape, response shape, and `curl` examples.
   </Card>
-  <Card title="MCP integration" icon="plug" href="/mcp-overview">
+  <Card title="MCP integration" href="mcp-overview">
     The canonical config block for Claude Code, Codex, Cursor, and other MCP-aware harnesses.
   </Card>
-</CardGroup>
+</CardGrid>

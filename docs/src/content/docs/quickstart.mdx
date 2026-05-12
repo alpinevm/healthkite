@@ -3,30 +3,34 @@ title: Quickstart
 description: "From zero to your agent answering health questions in under 3 minutes."
 ---
 
+import { Aside, Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+
 You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Node 20+.
 
 ## 1 — Turn on the LAN server
 
 <Steps>
-  <Step title="Open Wirebody">
-    Switch to the **Settings** tab.
-  </Step>
-  <Step title="Toggle Local LAN Server on">
-    iOS will ask for **Local Network** permission the first time. Allow it.
-  </Step>
-  <Step title="Note the URL and token">
-    The Settings screen now shows:
+1. **Open Wirebody**
 
-    - **URL** — something like `http://192.168.1.244:5606`
-    - **Token** — a 22-character base62 string
+   Switch to the **Settings** tab.
 
-    Tap either to copy it. A small `Copied` capsule confirms.
-  </Step>
+2. **Toggle Local LAN Server on**
+
+   iOS will ask for **Local Network** permission the first time. Allow it.
+
+3. **Note the URL and token**
+
+   The Settings screen now shows:
+
+   - **URL** — something like `http://192.168.1.244:5606`
+   - **Token** — a 22-character base62 string
+
+   Tap either to copy it. A small `Copied` capsule confirms.
 </Steps>
 
-<Note>
+<Aside type="note">
 The LAN server only runs while the Wirebody app is foregrounded on the iPhone. iOS suspends background apps, so the server stops the moment you switch apps or lock the phone. This is a platform constraint, not a bug.
-</Note>
+</Aside>
 
 ## 2 — Verify it works with `curl`
 
@@ -48,8 +52,10 @@ If you get `401 unauthorized`, the bearer token doesn't match. If the connection
 
 The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-aware agent.
 
-<CodeGroup>
-```json Claude Code (~/.claude/mcp_servers.json)
+<Tabs>
+  <TabItem label="Claude Code">
+
+```json
 {
   "mcpServers": {
     "wirebody": {
@@ -64,7 +70,10 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 }
 ```
 
-```json Codex (~/.codex/config.json)
+  </TabItem>
+  <TabItem label="Codex">
+
+```json
 {
   "mcpServers": {
     "wirebody": {
@@ -79,7 +88,10 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 }
 ```
 
-```json Cursor (.cursor/mcp.json)
+  </TabItem>
+  <TabItem label="Cursor">
+
+```json
 {
   "mcpServers": {
     "wirebody": {
@@ -93,7 +105,9 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
   }
 }
 ```
-</CodeGroup>
+
+  </TabItem>
+</Tabs>
 
 Restart the agent. The tools `status`, `list_workouts`, `get_workout`, `list_quantity_types`, `get_quantity_series`, `list_sleep_sessions`, and `get_day_snapshot` should appear in its tool list.
 
@@ -113,6 +127,6 @@ The agent calls `get_day_snapshot(date: "2026-05-10")` and replies with sleep / 
 
 ## What's next
 
-- [Wire format](/concepts/wire-format) — why the JSON looks the way it does
-- [API reference](/api-reference/overview) — every endpoint, every parameter
-- [MCP integration](/mcp-overview) — tools, error codes, environment variables
+- [Wire format](concepts/wire-format) — why the JSON looks the way it does
+- [API reference](api-reference/overview) — every endpoint, every parameter
+- [MCP integration](mcp-overview) — tools, error codes, environment variables

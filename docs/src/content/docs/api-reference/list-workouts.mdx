@@ -52,6 +52,6 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 - Sorted by `startDate` descending.
 - Summaries include device + sourceRevision inline (no provenance hoisting at this layer — the list is intended as a quick browseable index, and per-summary provenance is rarely duplicated since users typically have one watch).
-- For full sample-series detail, follow up with [`GET /workouts/{uuid}`](/api-reference/get-workout).
+- For full sample-series detail, follow up with [`GET /workouts/{uuid}`](./get-workout).
 - `hasMore` is `true` iff `offset + workouts.length < total`.
 - An offset beyond the end returns an empty `workouts` array with `hasMore: false`. It does not 404.

@@ -33,9 +33,9 @@ Any other method on these paths returns `405 Method Not Allowed` with `Allow: GE
 
 All responses share three conventions:
 
-- **HealthKit-native field names.** No invented vocabulary. See [Wire format](/concepts/wire-format).
+- **HealthKit-native field names.** No invented vocabulary. See [Wire format](../concepts/wire-format).
 - **`sampleEncoding: "columnar-v1"`** — discriminator at the top of any response containing sample series. Future versions bump the suffix.
-- **`sources` array + `src` indices** — provenance is hoisted. See [Provenance hoisting](/concepts/provenance-hoisting).
+- **`sources` array + `src` indices** — provenance is hoisted. See [Provenance hoisting](../concepts/provenance-hoisting).
 
 ## Errors
 

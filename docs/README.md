@@ -1,17 +1,21 @@
 # Wirebody docs
 
-Mintlify documentation site for [Wirebody](https://github.com/alpinevm/wirebody).
+[Astro Starlight](https://starlight.astro.build/) site. Live at https://alpinevm.github.io/wirebody/.
 
-## Local preview
+## Local dev
 
 ```bash
-npm install -g mintlify
 cd docs
-mintlify dev
+npm install
+npm run dev
 ```
 
-The dev server starts at `http://localhost:3000`.
+Dev server at http://localhost:4321.
 
-## Deployment
+## Build
 
-This is the `docs/` subdirectory of the [`alpinevm/wirebody`](https://github.com/alpinevm/wirebody) monorepo. To auto-deploy via Mintlify, connect the monorepo at [Mintlify Dashboard](https://dashboard.mintlify.com/) and point at this subdirectory.
+```bash
+npm run build
+```
+
+Output: `dist/`. Deployed via the GitHub Actions workflow at `../.github/workflows/docs.yml`.

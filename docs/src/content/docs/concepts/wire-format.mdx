@@ -73,8 +73,8 @@ Five reasons, in priority order:
 
 Three structural features are Wirebody-specific and worth understanding:
 
-- **`sampleEncoding: "columnar-v1"`** — see [Columnar encoding](/concepts/columnar-encoding).
-- **`sources` array with `src` indices** — see [Provenance hoisting](/concepts/provenance-hoisting).
+- **`sampleEncoding: "columnar-v1"`** — see [Columnar encoding](./columnar-encoding).
+- **`sources` array with `src` indices** — see [Provenance hoisting](./provenance-hoisting).
 - **`workoutActivityType` as the full Apple enum string** — see above. We don't shorten to `"running"`.
 
 These three are the only places Wirebody adds structure beyond what HealthKit literally returns. Everything else is a faithful encoding of the Swift objects.

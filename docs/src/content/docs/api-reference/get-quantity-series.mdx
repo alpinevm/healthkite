@@ -8,7 +8,7 @@ GET /quantity/{type}?from=<iso8601>&to=<iso8601>&limit=5000&offset=0
 Authorization: Bearer <token>
 ```
 
-`type` is a full `HKQuantityTypeIdentifier...` string — get the list from [`/quantity-types`](/api-reference/list-quantity-types). Short forms (`StepCount`) are also accepted when they map unambiguously.
+`type` is a full `HKQuantityTypeIdentifier...` string — get the list from [`/quantity-types`](./list-quantity-types). Short forms (`StepCount`) are also accepted when they map unambiguously.
 
 ## Query parameters
 
@@ -46,7 +46,7 @@ The default 7-day window keeps responses bounded; you must opt in to longer rang
 }
 ```
 
-Sample-array conventions are the same as for workout streams (see [Columnar encoding](/concepts/columnar-encoding)) with one difference: **`t` is integer seconds offset from `from`** (the response's window start), not from a workout's start.
+Sample-array conventions are the same as for workout streams (see [Columnar encoding](../concepts/columnar-encoding)) with one difference: **`t` is integer seconds offset from `from`** (the response's window start), not from a workout's start.
 
 - `dur` array — included iff any sample has non-zero duration. Step-count and active-energy typically do; HR is instant.
 - `src` array — included iff any sample's source differs from `id: 0`.

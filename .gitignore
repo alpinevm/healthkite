@@ -1,6 +1,7 @@
 # Node
 node_modules/
 dist/
+.astro/
 *.tsbuildinfo
 
 # Editor / OS
@@ -9,5 +10,5 @@ dist/
 .idea/
 *.swp
 
-# Mintlify
+# Legacy docs tooling
 .mintlify/
