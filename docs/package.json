@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "start": "serve dist -l tcp://0.0.0.0:${PORT:-3000}"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.39.2",
-    "astro": "^6.3.1"
+    "astro": "^6.3.1",
+    "serve": "^14.2.4"
   }
 }
