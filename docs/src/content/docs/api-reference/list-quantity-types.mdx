@@ -5,7 +5,6 @@ description: "Catalog of standalone HealthKit quantity types — what you can as
 
 ```http
 GET /quantity-types
-Authorization: Bearer <token>
 ```
 
 Returns metadata for every quantity type Wirebody knows about, regardless of whether the user has authorized read access to it.
@@ -53,12 +52,9 @@ Returns metadata for every quantity type Wirebody knows about, regardless of whe
 
 Sorted by `category` then `identifier`. Deterministic.
 
-## Example
+## MCP tool
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     http://192.168.1.244:5606/quantity-types | jq '.types[] | select(.permissionStatus == "granted")'
-```
+`list_quantity_types`
 
 ## Notes
 

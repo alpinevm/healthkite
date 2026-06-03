@@ -5,7 +5,6 @@ description: "One-call overview of a single local-calendar day."
 
 ```http
 GET /day-snapshot/{date}
-Authorization: Bearer <token>
 ```
 
 `date` is `YYYY-MM-DD` in the **iPhone's local timezone**. The server brackets `[startOfDay, nextDayStart)` exactly the way the iOS UI does, so the numbers in the response match what's on screen.
@@ -107,19 +106,12 @@ Latest body measurement on or before `endOfDay`. `mostRecentSampleDate` indicate
 
 ## Future dates
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" http://192.168.1.244:5606/day-snapshot/2099-01-01
-```
-
-Returns `200` with `sleep: []`, `workouts: []`, and `activity/heart/body/mobility: null`. No error.
+`get_day_snapshot({ "date": "2099-01-01" })` returns `200` with `sleep: []`, `workouts: []`, and `activity`/`heart`/`body`/`mobility: null`. No error.
 
 ## Errors
 
 - `400 bad_date` — date parameter doesn't parse as `YYYY-MM-DD`.
 
-## Example
+## MCP tool
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     http://192.168.1.244:5606/day-snapshot/2026-05-10
-```
+`get_day_snapshot({ "date": "2026-05-10" })`

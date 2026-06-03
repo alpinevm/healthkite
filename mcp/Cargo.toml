@@ -1,0 +1,22 @@
+[package]
+name = "wirebody-mcp"
+version = "0.6.0"
+edition = "2021"
+license = "MIT"
+description = "Rust MCP server for Wirebody LAN discovery and TLS-PSK transport"
+
+[[bin]]
+name = "wirebody-mcp"
+path = "src/main.rs"
+
+[dependencies]
+data-encoding = "2.6"
+hkdf = "0.12"
+mdns-sd = "0.20"
+openssl = "0.10"
+openssl-sys = "0.9"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+thiserror = "2.0"
+urlencoding = "2.1"

@@ -5,7 +5,6 @@ description: "Full columnar workout detail — same payload as Share / Copy / Pu
 
 ```http
 GET /workouts/{uuid}
-Authorization: Bearer <token>
 ```
 
 `uuid` is case-insensitive. Get one from `list_workouts`.
@@ -78,12 +77,9 @@ Authorization: Bearer <token>
 }
 ```
 
-## Example
+## MCP tool
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-  http://192.168.1.244:5606/workouts/06E9D6D6-7E37-406C-8465-1DAAD7C223A1
-```
+`get_workout({ "uuid": "06E9D6D6-7E37-406C-8465-1DAAD7C223A1" })`
 
 ## Sample shape
 

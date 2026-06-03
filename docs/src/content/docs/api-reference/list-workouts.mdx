@@ -5,7 +5,6 @@ description: "Paginated workout summaries, newest first."
 
 ```http
 GET /workouts?limit=50&offset=0
-Authorization: Bearer <token>
 ```
 
 ## Query parameters
@@ -41,12 +40,9 @@ Authorization: Bearer <token>
 }
 ```
 
-## Example
+## MCP tool
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-  "http://192.168.1.244:5606/workouts?limit=10&offset=0"
-```
+`list_workouts({ "limit": 10, "offset": 0 })`
 
 ## Notes
 

@@ -7,7 +7,7 @@ sidebar:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-**Wirebody** is an iOS app that turns your iPhone into a small read-only HTTP server for your own Apple Health data. Run it on your home Wi-Fi, point an AI agent or a script at it, and get clean HealthKit-native JSON back.
+**Wirebody** is an iOS app that turns your iPhone into a small read-only, authenticated LAN endpoint for your own Apple Health data. Run it on your home Wi-Fi, point an AI agent at it, and get clean HealthKit-native JSON back without a cloud backend.
 
 It is **free**, the wire format is **HealthKit-native** (Apple's own identifier vocabulary, no invented schema), and the companion MCP server is **open-source under MIT** — paste the config into Claude Code, Codex, Cursor, or any MCP-aware tool and ask your agent direct questions about your workouts, sleep, and vitals.
 
@@ -45,16 +45,16 @@ Apple HealthKit has no Apple-hosted API. If you want your data off the phone —
 
 Three pieces:
 
-1. **Wirebody iOS app** — Swift / SwiftUI, native HealthKit integration. Hosts the LAN HTTP server while in the foreground. Closed-source (for now), but the wire format and MCP integration are fully documented and reproducible.
-2. **Local LAN HTTP server** — small `NWListener`-based HTTP/1.1 endpoint with bearer-token auth. Listens only while the app is foregrounded; iOS suspends background apps.
-3. **`wirebody-mcp`** — TypeScript MCP server, MIT-licensed, [public on GitHub](https://github.com/alpinevm/wirebody). Stdio transport, runs locally via `npx` on the same machine as your agent.
+1. **Wirebody iOS app** — Swift / SwiftUI, native HealthKit integration. Hosts the LAN server while in the foreground. Closed-source (for now), but the wire format and MCP integration are fully documented and reproducible.
+2. **Authenticated LAN transport** — Bonjour/mDNS discovery plus a `NWListener` HTTP/1.1 endpoint protected by TLS-PSK. The pairing secret is never sent as a bearer token.
+3. **`wirebody-mcp`** — Rust MCP server, MIT-licensed, [public on GitHub](https://github.com/alpinevm/wirebody). Stdio transport, installed with Cargo on the same machine as your agent.
 
 ```
 [ Claude Code / Codex / Cursor / ... ]
               │  stdio (JSON-RPC)
               ▼
-   wirebody-mcp (Node, MIT)
-              │  HTTP + bearer
+   wirebody-mcp (Rust, MIT)
+              │  Bonjour discovery + TLS-PSK
               ▼
    Wirebody iOS app (LAN)
               │  HealthKit
@@ -72,7 +72,7 @@ Three pieces:
     The design rules behind the JSON shape: HealthKit-native vocabulary, columnar samples, hoisted provenance.
   </Card>
   <Card title="API reference" href="api-reference/overview">
-    Every endpoint with request shape, response shape, and `curl` examples.
+    Every endpoint with request shape and response shape.
   </Card>
   <Card title="MCP integration" href="mcp-overview">
     The canonical config block for Claude Code, Codex, Cursor, and other MCP-aware harnesses.

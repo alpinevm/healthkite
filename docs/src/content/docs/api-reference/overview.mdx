@@ -1,19 +1,19 @@
 ---
 title: API overview
-description: "Read-only HTTP/1.1 over LAN, JSON in / JSON out, bearer-token auth."
+description: "Read-only HTTP/1.1 inside authenticated LAN TLS-PSK."
 ---
 
-The Wirebody LAN server speaks plaintext HTTP/1.1 over TCP on your home Wi-Fi. Every endpoint is **read-only** and returns `application/json; charset=utf-8`.
+The Wirebody LAN server exposes read-only HTTP/1.1 JSON endpoints inside an authenticated TLS-PSK connection. MCP clients normally access these endpoints through `wirebody-mcp`, which discovers the iPhone with Bonjour/mDNS and opens the TLS-PSK channel.
 
-## Base URL
+## Addressing
 
-The base URL is displayed in the iOS app's **Settings → Local LAN Server** row when the server is on:
+Users do not copy an IP address. Wirebody advertises a DNS-SD service:
 
+```text
+<derived-instance>._wirebody._tcp.local.
 ```
-http://<iPhone-LAN-IP>:<port>
-```
 
-Default port is `8080`. The displayed URL uses the iPhone's primary Wi-Fi IPv4 (typically `192.168.x.x`).
+The instance label is derived from the Pairing Secret, and the SRV record carries the current host/port. Default port is `8080`, configurable in Settings.
 
 ## Endpoints
 
@@ -43,9 +43,6 @@ All responses share three conventions:
 HTTP/1.1 400 Bad Request
 {"error": "bad_request"}
 
-HTTP/1.1 401 Unauthorized
-{"error": "unauthorized"}
-
 HTTP/1.1 404 Not Found
 {"error": "not_found"}
 
@@ -56,6 +53,6 @@ HTTP/1.1 500 Internal Server Error
 {"error": "server_error"}
 ```
 
-The `401` responses also include `WWW-Authenticate: Bearer realm="Wirebody"`.
+Authentication failures usually happen before HTTP, during discovery or TLS-PSK handshake. In MCP, these surface as `Unauthorized` or `Unreachable` tool errors.
 
-Query parameters are forgiving: bad `limit`/`offset`/date values clamp to defaults rather than `400`. Path parameters like `/workouts/{uuid}` or `/day-snapshot/{date}` do enforce shape (a malformed UUID won't match anything; a malformed date returns `400 bad_date`).
+Query parameters are forgiving: bad `limit`/`offset` values clamp to defaults. Path parameters like `/workouts/{uuid}` or `/day-snapshot/{date}` do enforce shape (a malformed UUID won't match anything; a malformed date returns `400 bad_date`).

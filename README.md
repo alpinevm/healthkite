@@ -2,7 +2,7 @@
 
 > Apple HealthKit, exposed honestly as JSON. Free, open-source, agent-native.
 
-This monorepo contains the public-facing components of **Wirebody** — an iOS app that turns your iPhone into a small read-only HTTP server for your own Apple Health data. Point an MCP-aware agent (Claude Code, Codex, Cursor, etc.) or a script at it and get clean HealthKit-native JSON back.
+This monorepo contains the public-facing components of **Wirebody** — an iOS app that turns your iPhone into a small read-only, authenticated LAN endpoint for your own Apple Health data. Point an MCP-aware agent (Claude Code, Codex, Cursor, etc.) at it and get clean HealthKit-native JSON back without a cloud backend.
 
 The iOS app itself is closed-source (for now); everything an integrator needs to consume it lives here.
 
@@ -10,28 +10,39 @@ The iOS app itself is closed-source (for now); everything an integrator needs to
 
 | Directory | What it is |
 | --- | --- |
-| [`mcp/`](mcp/) | **`wirebody-mcp`** — TypeScript MCP server, MIT-licensed. Stdio transport, runs locally via `npx`. Bridges the LAN endpoints to any MCP-aware agent. |
+| [`mcp/`](mcp/) | **`wirebody-mcp`** — Rust MCP server, MIT-licensed. Stdio transport, installed with Cargo. Uses Bonjour/mDNS discovery and TLS-PSK to bridge the iOS app to any MCP-aware agent. |
 | [`docs/`](docs/) | Astro Starlight documentation site. Concepts, API reference, MCP integration guide. |
 
 ## Quick start
 
-```bash
-# In your agent's MCP config (works in Claude Code, Codex, Cursor, Zed, Continue, ...)
-{
-  "mcpServers": {
-    "wirebody": {
-      "command": "npx",
-      "args": ["-y", "wirebody-mcp"],
-      "env": {
-        "WIREBODY_URL": "http://<your-iPhone-LAN-IP>:<port>",
-        "WIREBODY_TOKEN": "<token from the iOS app's Settings>"
-      }
-    }
-  }
-}
-```
+1. Install the MCP server:
 
-Open the Wirebody iOS app, toggle on **Local LAN Server** in Settings, copy the URL + token. Restart your agent.
+   ```bash
+   cargo install --git https://github.com/alpinevm/wirebody wirebody-mcp
+   ```
+
+   To upgrade an existing install, run the same command with `--force`.
+
+2. Add it to your MCP client config:
+
+   ```json
+   {
+     "mcpServers": {
+       "wirebody": {
+         "command": "wirebody-mcp",
+         "env": {
+           "WIREBODY_TOKEN": "<pairing secret from Wirebody Settings>"
+         }
+       }
+     }
+   }
+   ```
+
+   If your MCP client cannot find `wirebody-mcp`, either add Cargo's bin directory to `PATH` or use the absolute command path shown by `which wirebody-mcp`.
+
+3. Open the Wirebody iOS app, toggle on **Local LAN Server** in Settings, copy the **Pairing Secret**, and restart your agent. The MCP server discovers the phone over Bonjour; no URL is copied.
+
+Prerequisites: Rust/Cargo plus OpenSSL development libraries available to Cargo (`libssl-dev` and `pkg-config` on Debian/Ubuntu; Homebrew `openssl@3` on macOS if needed).
 
 Full setup guide: [`docs/quickstart.mdx`](docs/quickstart.mdx).
 
@@ -43,8 +54,8 @@ Docs are built with [Astro Starlight](https://starlight.astro.build/) and hosted
 [ Claude Code / Codex / Cursor / ... ]
               │  stdio (JSON-RPC)
               ▼
-   wirebody-mcp (Node, MIT)
-              │  HTTP + bearer
+   wirebody-mcp (Rust, MIT)
+              │  Bonjour discovery + TLS-PSK
               ▼
    Wirebody iOS app on your LAN
               │  HealthKit

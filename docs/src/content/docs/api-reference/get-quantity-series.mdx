@@ -5,7 +5,6 @@ description: "Standalone HealthKit quantity series in columnar shape."
 
 ```http
 GET /quantity/{type}?from=<iso8601>&to=<iso8601>&limit=5000&offset=0
-Authorization: Bearer <token>
 ```
 
 `type` is a full `HKQuantityTypeIdentifier...` string — get the list from [`/quantity-types`](./list-quantity-types). Short forms (`StepCount`) are also accepted when they map unambiguously.
@@ -52,21 +51,15 @@ Sample-array conventions are the same as for workout streams (see [Columnar enco
 - `src` array — included iff any sample's source differs from `id: 0`.
 - `metadata` map — sparse, present iff any sample has metadata.
 
-## Examples
+## MCP examples
 
 Last week's heart rate samples:
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-  "http://192.168.1.244:5606/quantity/HKQuantityTypeIdentifierHeartRate?from=2026-05-04T00:00:00Z&to=2026-05-11T00:00:00Z"
-```
+`get_quantity_series({ "type": "HKQuantityTypeIdentifierHeartRate", "from": "2026-05-04T00:00:00Z", "to": "2026-05-11T00:00:00Z" })`
 
 Resting HR over the past 60 days:
 
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-  "http://192.168.1.244:5606/quantity/HKQuantityTypeIdentifierRestingHeartRate?from=2026-03-11T00:00:00Z&to=2026-05-11T00:00:00Z"
-```
+`get_quantity_series({ "type": "HKQuantityTypeIdentifierRestingHeartRate", "from": "2026-03-11T00:00:00Z", "to": "2026-05-11T00:00:00Z" })`
 
 ## Errors
 

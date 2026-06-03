@@ -5,7 +5,7 @@ description: "From zero to your agent answering health questions in under 3 minu
 
 import { Aside, Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Node 20+.
+You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Rust/Cargo for installing the MCP server.
 
 ## 1 — Turn on the LAN server
 
@@ -18,39 +18,37 @@ You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine o
 
    iOS will ask for **Local Network** permission the first time. Allow it.
 
-3. **Note the URL and token**
+3. **Copy the Pairing Secret**
 
-   The Settings screen now shows:
+   The Settings screen shows a **Pairing Secret**. Tap it to copy.
 
-   - **URL** — something like `http://192.168.1.244:5606`
-   - **Token** — a 22-character base62 string
+   That one secret is used locally to derive both:
 
-   Tap either to copy it. A small `Copied` capsule confirms.
+   - the Bonjour/mDNS discovery name, and
+   - the TLS-PSK authentication key.
 </Steps>
 
 <Aside type="note">
 The LAN server only runs while the Wirebody app is foregrounded on the iPhone. iOS suspends background apps, so the server stops the moment you switch apps or lock the phone. This is a platform constraint, not a bug.
 </Aside>
 
-## 2 — Verify it works with `curl`
+## 2 — Install the MCP server
 
-From any other device on the same Wi-Fi:
+The MCP server is a Rust stdio program. It discovers the iPhone over Bonjour and connects over TLS-PSK; there is no URL to paste and no bearer token sent over the network.
 
 ```bash
-curl -H "Authorization: Bearer <token>" http://<ip>:<port>/
+cargo install --git https://github.com/alpinevm/wirebody wirebody-mcp
 ```
 
-You should get back:
+From a local checkout of the public repo:
 
-```json
-{"name":"Wirebody","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":124}
+```bash
+cargo install --path mcp --force
 ```
 
-If you get `401 unauthorized`, the bearer token doesn't match. If the connection refuses, the iPhone is locked or the app is backgrounded — bring it back to the foreground.
+If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first (`libssl-dev` and `pkg-config` on Debian/Ubuntu; Homebrew `openssl@3` on macOS if needed).
 
-## 3 — Install the MCP server
-
-The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-aware agent.
+## 3 — Configure your agent
 
 <Tabs>
   <TabItem label="Claude Code">
@@ -59,11 +57,9 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 {
   "mcpServers": {
     "wirebody": {
-      "command": "npx",
-      "args": ["-y", "wirebody-mcp"],
+      "command": "wirebody-mcp",
       "env": {
-        "WIREBODY_URL": "http://192.168.1.244:5606",
-        "WIREBODY_TOKEN": "<paste-your-token>"
+        "WIREBODY_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -77,11 +73,9 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 {
   "mcpServers": {
     "wirebody": {
-      "command": "npx",
-      "args": ["-y", "wirebody-mcp"],
+      "command": "wirebody-mcp",
       "env": {
-        "WIREBODY_URL": "http://192.168.1.244:5606",
-        "WIREBODY_TOKEN": "<paste-your-token>"
+        "WIREBODY_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -95,11 +89,9 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 {
   "mcpServers": {
     "wirebody": {
-      "command": "npx",
-      "args": ["-y", "wirebody-mcp"],
+      "command": "wirebody-mcp",
       "env": {
-        "WIREBODY_URL": "http://192.168.1.244:5606",
-        "WIREBODY_TOKEN": "<paste-your-token>"
+        "WIREBODY_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -110,6 +102,8 @@ The MCP server is a tiny Node program that proxies the LAN endpoints to any MCP-
 </Tabs>
 
 Restart the agent. The tools `status`, `list_workouts`, `get_workout`, `list_quantity_types`, `get_quantity_series`, `list_sleep_sessions`, and `get_day_snapshot` should appear in its tool list.
+
+If the tools return an unreachable/discovery error, keep Wirebody open in the foreground and confirm the iPhone and agent machine are on the same Wi-Fi network without guest/client isolation.
 
 ## 4 — Ask your first question
 

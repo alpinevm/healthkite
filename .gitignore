@@ -3,6 +3,7 @@ node_modules/
 dist/
 .astro/
 *.tsbuildinfo
+target/
 
 # Editor / OS
 .DS_Store
