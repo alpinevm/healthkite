@@ -1,6 +1,6 @@
 use openssl::error::ErrorStack;
 use openssl::ex_data::Index;
-use openssl::ssl::{SslConnector, SslContext, SslMethod, SslVerifyMode, SslVersion};
+use openssl::ssl::{SslConnector, SslContext, SslMethod, SslStream, SslVerifyMode, SslVersion};
 use openssl_sys::{EVP_MD, SSL, SSL_CIPHER, SSL_CTX, SSL_SESSION};
 use std::ffi::{c_int, c_uchar, c_void};
 use std::fmt;
@@ -157,86 +157,141 @@ pub struct RawHttpTransport {
     psk: PskMaterial,
 }
 
+pub struct PskHttpConnection {
+    endpoint: Endpoint,
+    stream: SslStream<TcpStream>,
+    read_buffer: Vec<u8>,
+}
+
 impl RawHttpTransport {
     pub fn new(endpoint: Endpoint, psk: PskMaterial) -> Self {
         Self { endpoint, psk }
     }
+}
 
-    fn request_bytes(&self, path_and_query: &str) -> Vec<u8> {
-        let target = self.endpoint.target(path_and_query);
-        format!(
-            "GET {target} HTTP/1.1\r\nHost: {}\r\nAccept: application/json\r\nUser-Agent: wirebody-mcp/0.6.0\r\nConnection: close\r\n\r\n",
-            self.endpoint.authority()
-        )
-        .into_bytes()
-    }
-
-    fn tcp_stream(&self) -> Result<TcpStream, HttpError> {
-        let mut addrs = self
-            .endpoint
-            .socket_addr()
-            .to_socket_addrs()
-            .map_err(|_| HttpError::Connect(self.endpoint.to_string()))?;
-        let addr = addrs
-            .next()
-            .ok_or_else(|| HttpError::Connect(self.endpoint.to_string()))?;
-        let stream = TcpStream::connect_timeout(&addr, CONNECT_TIMEOUT)
-            .map_err(|_| HttpError::Connect(self.endpoint.to_string()))?;
-        stream
-            .set_read_timeout(Some(READ_TIMEOUT))
-            .map_err(|error| HttpError::Read(error.to_string()))?;
-        stream
-            .set_write_timeout(Some(WRITE_TIMEOUT))
-            .map_err(|error| HttpError::Write(error.to_string()))?;
-        stream
-            .set_nodelay(true)
-            .map_err(|error| HttpError::Connect(error.to_string()))?;
-        let _ = stream.set_nonblocking(false);
-        Ok(stream)
-    }
-
-    fn get_https_psk(&self, request: &[u8]) -> Result<Vec<u8>, HttpError> {
-        let psk = self.psk.clone();
-        let mut builder = SslConnector::builder(SslMethod::tls_client())
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-        builder.set_verify(SslVerifyMode::NONE);
-        builder
-            .set_min_proto_version(Some(SslVersion::TLS1_2))
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-        builder
-            .set_max_proto_version(Some(SslVersion::TLS1_3))
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-        builder
-            .set_cipher_list("PSK-AES128-GCM-SHA256")
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-        builder
-            .set_ciphersuites("TLS_AES_128_GCM_SHA256")
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-        install_tls_psk_callbacks(&mut builder, psk)
-            .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
-
-        let connector = builder.build();
-        let stream = self.tcp_stream()?;
-        let mut stream = connector
-            .connect(self.endpoint.host(), stream)
+impl PskHttpConnection {
+    pub fn connect(endpoint: Endpoint, psk: &PskMaterial) -> Result<Self, HttpError> {
+        let connector = build_connector(psk.clone())?;
+        let tcp_stream = tcp_stream(&endpoint)?;
+        let stream = connector
+            .connect(endpoint.host(), tcp_stream)
             .map_err(|error| HttpError::TlsHandshake(error.to_string()))?;
-        stream
-            .write_all(request)
+        Ok(Self {
+            endpoint,
+            stream,
+            read_buffer: Vec::new(),
+        })
+    }
+
+    pub fn endpoint(&self) -> &Endpoint {
+        &self.endpoint
+    }
+
+    pub fn get(&mut self, path_and_query: &str) -> Result<HttpResponse, HttpError> {
+        let request = request_bytes(&self.endpoint, path_and_query);
+        self.stream
+            .write_all(&request)
             .map_err(|error| HttpError::Write(error.to_string()))?;
-        let mut response = Vec::new();
-        stream
-            .read_to_end(&mut response)
-            .map_err(|error| HttpError::Read(error.to_string()))?;
-        Ok(response)
+        read_response(&mut self.stream, &mut self.read_buffer)
     }
 }
 
 impl HttpTransport for RawHttpTransport {
     fn get(&self, path_and_query: &str) -> Result<HttpResponse, HttpError> {
-        let request = self.request_bytes(path_and_query);
-        let bytes = self.get_https_psk(&request)?;
-        parse_response(&bytes)
+        let mut connection = PskHttpConnection::connect(self.endpoint.clone(), &self.psk)?;
+        connection.get(path_and_query)
     }
+}
+
+fn request_bytes(endpoint: &Endpoint, path_and_query: &str) -> Vec<u8> {
+    let target = endpoint.target(path_and_query);
+    format!(
+        "GET {target} HTTP/1.1\r\nHost: {}\r\nAccept: application/json\r\nUser-Agent: wirebody-mcp/{}\r\nConnection: keep-alive\r\n\r\n",
+        endpoint.authority(),
+        env!("CARGO_PKG_VERSION")
+    )
+    .into_bytes()
+}
+
+fn tcp_stream(endpoint: &Endpoint) -> Result<TcpStream, HttpError> {
+    let mut addrs = endpoint
+        .socket_addr()
+        .to_socket_addrs()
+        .map_err(|_| HttpError::Connect(endpoint.to_string()))?;
+    let addr = addrs
+        .next()
+        .ok_or_else(|| HttpError::Connect(endpoint.to_string()))?;
+    let stream = TcpStream::connect_timeout(&addr, CONNECT_TIMEOUT)
+        .map_err(|_| HttpError::Connect(endpoint.to_string()))?;
+    stream
+        .set_read_timeout(Some(READ_TIMEOUT))
+        .map_err(|error| HttpError::Read(error.to_string()))?;
+    stream
+        .set_write_timeout(Some(WRITE_TIMEOUT))
+        .map_err(|error| HttpError::Write(error.to_string()))?;
+    stream
+        .set_nodelay(true)
+        .map_err(|error| HttpError::Connect(error.to_string()))?;
+    let _ = stream.set_nonblocking(false);
+    Ok(stream)
+}
+
+fn build_connector(psk: PskMaterial) -> Result<SslConnector, HttpError> {
+    let mut builder = SslConnector::builder(SslMethod::tls_client())
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    builder.set_verify(SslVerifyMode::NONE);
+    builder
+        .set_min_proto_version(Some(SslVersion::TLS1_2))
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    builder
+        .set_max_proto_version(Some(SslVersion::TLS1_3))
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    builder
+        .set_cipher_list("PSK-AES128-GCM-SHA256")
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    builder
+        .set_ciphersuites("TLS_AES_128_GCM_SHA256")
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    install_tls_psk_callbacks(&mut builder, psk)
+        .map_err(|error| HttpError::TlsSetup(error.to_string()))?;
+    Ok(builder.build())
+}
+
+fn read_response(
+    stream: &mut SslStream<TcpStream>,
+    read_buffer: &mut Vec<u8>,
+) -> Result<HttpResponse, HttpError> {
+    loop {
+        if let Some(header_end) = header_end(read_buffer) {
+            let content_length = response_content_length(&read_buffer[..header_end])?;
+            let response_end = header_end + 4 + content_length;
+            while read_buffer.len() < response_end {
+                read_more(stream, read_buffer)?;
+            }
+
+            let response_bytes = read_buffer.drain(..response_end).collect::<Vec<_>>();
+            return parse_response(&response_bytes);
+        }
+
+        read_more(stream, read_buffer)?;
+    }
+}
+
+fn read_more(
+    stream: &mut SslStream<TcpStream>,
+    read_buffer: &mut Vec<u8>,
+) -> Result<(), HttpError> {
+    let mut chunk = [0_u8; 16 * 1024];
+    let count = stream
+        .read(&mut chunk)
+        .map_err(|error| HttpError::Read(error.to_string()))?;
+    if count == 0 {
+        return Err(HttpError::Read(
+            "connection closed before a complete HTTP response".to_string(),
+        ));
+    }
+    read_buffer.extend_from_slice(&chunk[..count]);
+    Ok(())
 }
 
 fn psk_state_index() -> Result<Index<SslContext, PskMaterial>, ErrorStack> {
@@ -329,12 +384,32 @@ unsafe extern "C" fn raw_psk_use_session(
 }
 
 pub fn parse_response(bytes: &[u8]) -> Result<HttpResponse, HttpError> {
-    let header_end = bytes
-        .windows(4)
-        .position(|window| window == b"\r\n\r\n")
-        .ok_or(HttpError::InvalidResponse)?;
+    let header_end = header_end(bytes).ok_or(HttpError::InvalidResponse)?;
     let (head, body_with_separator) = bytes.split_at(header_end);
+    let (status, reason, content_length) = parse_response_head(head)?;
     let body = &body_with_separator[4..];
+    if body.len() < content_length {
+        return Err(HttpError::InvalidResponse);
+    }
+    let body = String::from_utf8(body[..content_length].to_vec())
+        .map_err(|_| HttpError::InvalidResponse)?;
+    Ok(HttpResponse {
+        status,
+        reason,
+        body,
+    })
+}
+
+fn header_end(bytes: &[u8]) -> Option<usize> {
+    bytes.windows(4).position(|window| window == b"\r\n\r\n")
+}
+
+fn response_content_length(head: &[u8]) -> Result<usize, HttpError> {
+    let (_, _, content_length) = parse_response_head(head)?;
+    Ok(content_length)
+}
+
+fn parse_response_head(head: &[u8]) -> Result<(u16, String, usize), HttpError> {
     let head = std::str::from_utf8(head).map_err(|_| HttpError::InvalidResponse)?;
     let mut lines = head.split("\r\n");
     let status_line = lines.next().ok_or(HttpError::InvalidResponse)?;
@@ -349,12 +424,25 @@ pub fn parse_response(bytes: &[u8]) -> Result<HttpResponse, HttpError> {
         .parse::<u16>()
         .map_err(|_| HttpError::InvalidResponse)?;
     let reason = parts.next().unwrap_or_default().to_string();
-    let body = String::from_utf8(body.to_vec()).map_err(|_| HttpError::InvalidResponse)?;
-    Ok(HttpResponse {
+    let mut content_length = None;
+    for line in lines {
+        let Some((name, value)) = line.split_once(':') else {
+            continue;
+        };
+        if name.trim().eq_ignore_ascii_case("content-length") {
+            content_length = Some(
+                value
+                    .trim()
+                    .parse::<usize>()
+                    .map_err(|_| HttpError::InvalidResponse)?,
+            );
+        }
+    }
+    Ok((
         status,
         reason,
-        body,
-    })
+        content_length.ok_or(HttpError::InvalidResponse)?,
+    ))
 }
 
 #[cfg(test)]
@@ -379,5 +467,15 @@ mod tests {
         assert_eq!(response.status, 404);
         assert_eq!(response.reason, "Not Found");
         assert_eq!(response.body, r#"{"error":"not_found"}"#);
+    }
+
+    #[test]
+    fn parses_only_declared_content_length_for_keepalive() {
+        let response = parse_response(
+            b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: keep-alive\r\n\r\n{}HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n[]",
+        )
+        .unwrap();
+        assert_eq!(response.status, 200);
+        assert_eq!(response.body, "{}");
     }
 }
