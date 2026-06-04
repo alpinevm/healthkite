@@ -1,3 +1,4 @@
+pub mod backend;
 pub mod config;
 pub mod crypto;
 pub mod discovery;

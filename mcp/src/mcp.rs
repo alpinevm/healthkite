@@ -375,6 +375,7 @@ pub fn tools() -> Value {
 mod tests {
     use super::*;
     use crate::http::{HttpError, HttpResponse, HttpTransport};
+    use std::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Arc;
 
     #[test]
@@ -431,6 +432,86 @@ mod tests {
             value["error"]["message"],
             "get_workout requires a non-empty uuid string"
         );
+    }
+
+    #[test]
+    fn initialize_and_tools_list_do_not_touch_wirebody_backend() {
+        let client = WirebodyClient::new("unused backend", Arc::new(PanicTransport));
+
+        let initialize = handle_line(
+            &client,
+            r#"{"jsonrpc":"2.0","id":4,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+        )
+        .unwrap();
+        let tools = handle_line(
+            &client,
+            r#"{"jsonrpc":"2.0","id":5,"method":"tools/list","params":{}}"#,
+        )
+        .unwrap();
+
+        assert!(serde_json::to_value(initialize).unwrap()["result"]["serverInfo"]["name"]
+            == "wirebody-mcp");
+        assert!(serde_json::to_value(tools).unwrap()["result"]["tools"]
+            .as_array()
+            .is_some_and(|tools| !tools.is_empty()));
+    }
+
+    #[test]
+    fn backend_failure_returns_tool_error_and_later_request_still_works() {
+        let client = WirebodyClient::new(
+            "Bonjour service fixture._wirebody._tcp.local.",
+            Arc::new(FlakyTransport {
+                calls: AtomicUsize::new(0),
+                response: HttpResponse {
+                    status: 200,
+                    reason: "OK".to_string(),
+                    body: r#"{"name":"Wirebody","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":0}"#
+                        .to_string(),
+                },
+            }),
+        );
+
+        let failed = handle_line(
+            &client,
+            r#"{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"status","arguments":{}}}"#,
+        )
+        .unwrap();
+        let failed = serde_json::to_value(failed).unwrap();
+        assert_eq!(failed["error"]["data"]["code"], "Unreachable");
+
+        let recovered = handle_line(
+            &client,
+            r#"{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"status","arguments":{}}}"#,
+        )
+        .unwrap();
+        let recovered = serde_json::to_value(recovered).unwrap();
+        assert_eq!(
+            recovered["result"]["content"][0]["text"],
+            "{\"name\":\"Wirebody\",\"sampleEncoding\":\"columnar-v1\",\"version\":\"1.0\",\"workoutCount\":0}"
+        );
+    }
+
+    struct PanicTransport;
+
+    impl HttpTransport for PanicTransport {
+        fn get(&self, _path_and_query: &str) -> Result<HttpResponse, HttpError> {
+            panic!("backend should not be contacted for MCP lifecycle methods");
+        }
+    }
+
+    struct FlakyTransport {
+        calls: AtomicUsize,
+        response: HttpResponse,
+    }
+
+    impl HttpTransport for FlakyTransport {
+        fn get(&self, _path_and_query: &str) -> Result<HttpResponse, HttpError> {
+            if self.calls.fetch_add(1, Ordering::SeqCst) == 0 {
+                return Err(HttpError::Connect("fixture unavailable".to_string()));
+            }
+
+            Ok(self.response.clone())
+        }
     }
 
     struct ConstantTransport {

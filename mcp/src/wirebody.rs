@@ -117,7 +117,12 @@ impl WirebodyClient {
 
     fn request_text(&self, path: &str, context: &str) -> Result<String, WirebodyError> {
         let response = self.transport.get(path).map_err(|error| match error {
-            HttpError::Connect(_) => WirebodyError::Unreachable(self.base_url.clone()),
+            HttpError::Connect(message)
+            | HttpError::TlsHandshake(message)
+            | HttpError::Read(message)
+            | HttpError::Write(message) => {
+                WirebodyError::Unreachable(format!("{} ({message})", self.base_url))
+            }
             other => WirebodyError::ServerError {
                 message: other.to_string(),
                 status: 0,
