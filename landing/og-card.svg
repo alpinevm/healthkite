@@ -1,16 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="HealthKite - Local Mcp Server That Turns Apple Health">
-  <rect width="1200" height="630" fill="#07100D"/>
-  <pattern id="ordered-dither" width="12" height="12" patternUnits="userSpaceOnUse">
-    <rect width="12" height="12" fill="#0D1A16"/>
-    <rect x="1" y="1" width="2" height="2" fill="#E9F4EE" opacity=".18"/>
-    <rect x="7" y="4" width="2" height="2" fill="#E9F4EE" opacity=".18"/>
-    <rect x="4" y="9" width="2" height="2" fill="#E9F4EE" opacity=".18"/>
-  </pattern>
-  <rect x="44" y="44" width="1112" height="542" fill="none" stroke="#E9F4EE" stroke-width="3"/>
-  <rect x="80" y="80" width="300" height="470" fill="url(#ordered-dither)" stroke="#E9F4EE" stroke-width="2"/>
-  <rect x="420" y="96" width="90" height="18" fill="#54E3B0"/>
-  <text x="420" y="176" fill="#E9F4EE" font-family="Arial, Helvetica, sans-serif" font-size="28" letter-spacing="4">HealthKite</text>
-  <text x="420" y="292" fill="#E9F4EE" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">HealthKite - Local Mcp Server That Turns Apple Health</text>
-  <text x="420" y="372" fill="#E9F4EE" font-family="Arial, Helvetica, sans-serif" font-size="28">HealthKite frames local MCP server that turns Apple Health data as an operations dashboard with named actions and</text>
-  <text x="420" y="514" fill="#E9F4EE" font-family="monospace" font-size="20">accessible / critique-checked / no gradients</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="HealthKite — Apple Health, exposed as clean JSON">
+  <rect width="1200" height="630" fill="#faf8f3"/>
+  <rect x="48" y="48" width="1104" height="534" rx="22" fill="#ffffff" stroke="rgba(36,26,31,.12)" stroke-width="2"/>
+  <g transform="translate(-685,-110) scale(0.92)">
+    <path fill="#75b9be" d="M926.777 287.316C938.814 289.322 949.126 290.29 961.384 293.111C958.113 305.346 949.546 328.044 945.175 340.794C943.109 346.625 940.707 352.623 938.481 358.419C934.689 337.767 928.346 307.505 926.777 287.316Z"/>
+    <path fill="#75b9be" d="M963.806 293.464C973.332 297.452 984.281 306.132 995.384 310.024C992.291 313.662 986.277 318.891 982.548 322.353L959.654 343.608C953.886 349.156 947.864 354.433 941.607 359.423C948.43 337.114 956.596 315.578 963.806 293.464Z"/>
+    <path fill="#75b9be" d="M977.244 256.47C980.942 263.128 994.134 299.644 996.021 307.679L987.924 303.003L965.449 291.086C967.9 282.123 973.294 264.273 977.244 256.47Z"/>
+    <path fill="#75b9be" d="M973.797 256.039C974.262 256.975 964.083 287.038 963.056 290.436C954.952 288.194 941.413 286.823 932.829 285.783C930.955 285.452 928.928 285.214 927.032 284.954C940.366 275.352 959.441 264.11 973.797 256.039Z"/>
+  </g>
+  <text x="108" y="332" font-family="'IBM Plex Sans Condensed','IBM Plex Sans',system-ui,sans-serif" font-size="120" font-weight="700" fill="#987284" letter-spacing="-3">HealthKite</text>
+  <text x="112" y="404" font-family="system-ui,'Helvetica Neue',Arial,sans-serif" font-size="42" fill="#241a1f">Apple Health, exposed as clean JSON.</text>
+  <text x="112" y="468" font-family="'IBM Plex Mono','SF Mono',Menlo,monospace" font-size="24" fill="#6f5862" letter-spacing="3">LOCAL-FIRST · BONJOUR · TLS-PSK · MIT</text>
+  <rect x="112" y="502" width="124" height="6" rx="3" fill="#75b9be"/>
+  <circle cx="256" cy="505" r="6" fill="#ee7674"/>
 </svg>

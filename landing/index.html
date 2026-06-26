@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="en" data-theme="mint-terminal">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HealthKite — Apple Health, exposed as clean JSON</title>
   <meta name="description" content="HealthKite turns your iPhone into a local, read-only server for your own Apple Health data — discovered over Bonjour, secured with TLS-PSK, and read as HealthKit-native JSON by any MCP agent. Free, open-source, no cloud.">
   <link rel="canonical" href="./">
-  <meta name="theme-color" content="#07100D">
-  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <meta name="theme-color" content="#faf8f3">
+  <meta name="color-scheme" content="light">
   <meta property="og:title" content="HealthKite — Apple Health, exposed as clean JSON">
   <meta property="og:description" content="Your Apple Health data, streamed locally over TLS-PSK to any MCP agent. No cloud, no account.">
   <meta property="og:type" content="website">
@@ -31,14 +32,16 @@
     .code-head .dot{ width:10px; height:10px; border-radius:50%; flex:0 0 auto; }
     .code-head .dot.r{ background:#ff5f57; } .code-head .dot.y{ background:#febc2e; } .code-head .dot.g{ background:#2ace52; }
     .code-head .code-req{ margin-left:8px; color:var(--accent); letter-spacing:.03em; }
-    .code-block{ margin:0; padding:16px 18px; background:#050C09; border:1px solid var(--rule); border-radius:10px; overflow-x:auto; font-family:var(--font-mono); font-size:12.5px; line-height:1.7; color:var(--ink); }
+    .code-block{ margin:0; padding:16px 18px; background:var(--surface-raised); border:1px solid var(--rule); border-radius:10px; box-shadow:var(--shadow-soft); overflow-x:auto; font-family:var(--font-mono); font-size:12.5px; line-height:1.7; color:var(--ink); }
     .code-block code{ display:block; white-space:pre; }
     .code-block .j-key{ color:var(--accent); }
-    .code-block .j-str{ color:#bfe6d6; }
-    .code-block .j-num{ color:#ffcf94; }
+    .code-block .j-str{ color:#5b6336; }
+    .code-block .j-num{ color:#b23b34; }
     @media (max-width:768px){ .code-block{ font-size:11.5px; } }
     .gh-link{ display:inline-flex; align-items:center; }
     .gh-link svg{ display:block; }
+    .brand{ display:inline-flex; align-items:center; }
+    .brand-logo{ height:30px; width:auto; display:block; }
     #section-01-dashboard-header .dd-title{ max-width:none; white-space:nowrap; font-size:clamp(1.5rem,3.2vw,3rem); }
     @media (max-width:560px){ #section-01-dashboard-header .dd-title{ white-space:normal; } }
   </style>
@@ -47,7 +50,7 @@
 <body class="scaffold-site archetype-data-dashboard">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <strong>HealthKite</strong>
+    <a class="brand" href="/" aria-label="HealthKite home"><img class="brand-logo" src="./logo.svg" alt="HealthKite"></a>
     <nav class="site-nav" aria-label="Primary"><a href="https://docs.healthkite.app/quickstart/">Quickstart</a><a class="gh-link" href="https://github.com/alpinevm/healthkite" aria-label="GitHub"><svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a></nav>
     <details class="nav-menu"><summary aria-label="Open primary navigation">Menu</summary><nav aria-label="Primary mobile"><a href="https://docs.healthkite.app/quickstart/">Quickstart</a><a href="https://github.com/alpinevm/healthkite">GitHub</a></nav></details>
   </header>

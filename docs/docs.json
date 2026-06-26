@@ -2,7 +2,10 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "HealthKite",
-  "colors": { "primary": "#54E3B0", "light": "#7FF0C6", "dark": "#0D1A16" },
+  "colors": { "primary": "#41868b", "light": "#75b9be", "dark": "#316468" },
+  "logo": { "light": "/logo.svg", "dark": "/logo.svg" },
+  "favicon": "/favicon.svg",
+  "appearance": { "default": "light" },
   "navigation": {
     "pages": [
       { "group": "Get Started", "pages": ["index", "quickstart"] },
