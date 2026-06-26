@@ -1,0 +1,121 @@
+---
+title: "Quickstart"
+description: "From zero to your agent answering health questions in under 3 minutes."
+---
+
+You'll need an iPhone with the **HealthKite MCP** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Rust/Cargo for installing the MCP server.
+
+## 1 — Turn on the LAN server
+
+1. **Open HealthKite MCP**
+
+   Switch to the **Settings** tab.
+
+2. **Toggle Local LAN Server on**
+
+   iOS will ask for **Local Network** permission the first time. Allow it.
+
+3. **Copy the Pairing Secret**
+
+   The Settings screen shows a **Pairing Secret**. Tap it to copy.
+
+   That one secret is used locally to derive both:
+
+   - the Bonjour/mDNS discovery name, and
+   - the TLS-PSK authentication key.
+<Note>
+The LAN server only runs while the HealthKite MCP app is foregrounded on the iPhone. iOS suspends background apps, so the server stops the moment you switch apps or lock the phone. This is a platform constraint, not a bug.
+</Note>
+
+## 2 — Install the MCP server
+
+The MCP server is a Rust stdio program. It discovers the iPhone over Bonjour and connects over TLS-PSK; there is no URL to paste and no bearer token sent over the network.
+
+```bash
+cargo install --git https://github.com/alpinevm/healthkite healthkite-mcp
+```
+
+From a local checkout of the public repo:
+
+```bash
+cargo install --path mcp --force
+```
+
+If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first (`libssl-dev` and `pkg-config` on Debian/Ubuntu; Homebrew `openssl@3` on macOS if needed).
+
+## 3 — Configure your agent
+
+<Tabs>
+  <Tab title="Claude Code">
+
+```json
+{
+  "mcpServers": {
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
+      "env": {
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
+      }
+    }
+  }
+}
+```
+
+  </Tab>
+  <Tab title="Codex">
+
+```json
+{
+  "mcpServers": {
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
+      "env": {
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
+      }
+    }
+  }
+}
+```
+
+  </Tab>
+  <Tab title="Cursor">
+
+```json
+{
+  "mcpServers": {
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
+      "env": {
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
+      }
+    }
+  }
+}
+```
+
+  </Tab>
+</Tabs>
+
+Restart the agent. The tools `status`, `list_workouts`, `get_workout`, `list_quantity_types`, `get_quantity_series`, `list_sleep_sessions`, and `get_day_snapshot` should appear in its tool list.
+
+If the tools return an unreachable/discovery error, keep HealthKite MCP open in the foreground and confirm the iPhone and agent machine are on the same Wi-Fi network without guest/client isolation.
+
+## 4 — Ask your first question
+
+In Claude Code (or any agent), try:
+
+> Summarize my last 3 workouts and tell me whether my pace at threshold heart rate has improved.
+
+The agent calls `list_workouts(limit: 3)`, follows up with `get_workout(uuid)` for each, computes pace-per-km at avg HR ~165, and tells you. No spreadsheet, no copy-paste.
+
+Or:
+
+> Give me a single-day summary of yesterday. Just the highlights.
+
+The agent calls `get_day_snapshot(date: "2026-05-10")` and replies with sleep / activity / heart / mobility / workouts.
+
+## What's next
+
+- [Wire format](/concepts/wire-format) — why the JSON looks the way it does
+- [API reference](/api-reference/overview) — every endpoint, every parameter
+- [MCP integration](/mcp-overview) — tools, error codes, environment variables

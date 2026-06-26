@@ -1,0 +1,31 @@
+---
+title: "GET /workouts/{uuid}"
+description: "Full columnar workout detail — same payload as Share / Copy / Push in the iOS app."
+openapi: "GET /workouts/{uuid}"
+---
+
+`uuid` is case-insensitive. Get one from `list_workouts`.
+
+
+## MCP tool
+
+`get_workout({ "uuid": "06E9D6D6-7E37-406C-8465-1DAAD7C223A1" })`
+
+## Sample shape
+
+Each entry in `samples.*` follows the columnar shape detailed in [Columnar encoding](/concepts/columnar-encoding):
+
+- `unit` — hoisted once per stream
+- `t` — integer seconds offset from the workout's `startDate`
+- `dur` — present iff any sample has non-zero duration
+- `v` — sample values in `unit`
+- `src` — present iff samples span multiple sources (rare)
+- `metadata` — sparse map by sample-index when present
+
+## Typical size
+
+A 30-min run produces ~80-100 KB. Compare with the same data in per-sample-dict form: ~1.2 MB.
+
+## Errors
+
+- `404 not_found` — UUID doesn't match any workout.

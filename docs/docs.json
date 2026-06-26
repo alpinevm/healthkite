@@ -1,0 +1,33 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "HealthKite",
+  "colors": { "primary": "#54E3B0", "light": "#7FF0C6", "dark": "#0D1A16" },
+  "navigation": {
+    "pages": [
+      { "group": "Get Started", "pages": ["index", "quickstart"] },
+      { "group": "Concepts", "pages": ["concepts/wire-format", "concepts/columnar-encoding", "concepts/provenance-hoisting", "concepts/auth-and-lifecycle"] },
+      { "group": "MCP Integration", "pages": ["mcp-overview"] },
+      {
+        "group": "API Reference",
+        "openapi": "openapi.json",
+        "pages": [
+          "api-reference/overview",
+          "api-reference/authentication",
+          "api-reference/status",
+          "api-reference/list-workouts",
+          "api-reference/get-workout",
+          "api-reference/list-quantity-types",
+          "api-reference/get-quantity-series",
+          "api-reference/list-sleep-sessions",
+          "api-reference/get-day-snapshot"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "primary": { "type": "button", "label": "GitHub", "href": "https://github.com/alpinevm/healthkite" },
+    "links": [ { "label": "Home", "href": "https://healthkite.app" } ]
+  },
+  "footer": { "socials": { "github": "https://github.com/alpinevm/healthkite" } }
+}

@@ -1,0 +1,41 @@
+---
+title: "Authentication"
+description: "TLS-PSK authentication derived from the HealthKite MCP pairing secret."
+---
+
+HealthKite MCP's LAN API is not authenticated with an HTTP bearer header. The HTTP endpoints are served inside an authenticated TLS-PSK connection.
+
+The iOS app and `healthkite-mcp` both derive connection material from the **Pairing Secret** shown in Settings:
+
+```text
+discovery_id = HKDF-SHA256(root, info = "healthkite-mcp:discovery:v1")
+psk          = HKDF-SHA256(root, info = "healthkite-mcp:auth:v1")
+```
+
+- `discovery_id` becomes the Bonjour instance label.
+- `psk` is used by TLS-PSK.
+- The root secret and PSK are never transmitted.
+- `HEALTHKITE_URL` is unsupported; the MCP server discovers the app with Bonjour/mDNS.
+
+## MCP configuration
+
+```json
+{
+  "mcpServers": {
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
+      "env": {
+        "HEALTHKITE_TOKEN": "<pairing secret from HealthKite MCP Settings>"
+      }
+    }
+  }
+}
+```
+
+## Wrong or missing secret
+
+A wrong or missing pairing secret means the MCP server either cannot find the expected Bonjour instance or cannot complete the TLS-PSK handshake. Re-copy the Pairing Secret from HealthKite MCP Settings and restart the MCP client.
+
+## Regenerating
+
+Tap **Regenerate Pairing Secret** in Settings. Old MCP clients stop authenticating immediately and must be updated with the new `HEALTHKITE_TOKEN` value.

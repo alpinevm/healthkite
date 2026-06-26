@@ -1,0 +1,102 @@
+:root {
+  color-scheme: dark;
+  --accent: #54E3B0;
+  --field: #07100D;
+  --focus-ring: #54E3B0;
+  --ink: #E9F4EE;
+  --muted: #9AB4A8;
+  --rule: rgba(233,244,238,.16);
+  --status: #54E3B0;
+  --surface: #0D1A16;
+  --surface-raised: #132720;
+  --font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --display-xl: clamp(3.5rem,10vw,8rem);
+  --display-lg: clamp(2.75rem,7vw,6rem);
+  --display-md: clamp(2rem,4vw,3.5rem);
+  --title: clamp(1.125rem,2vw,1.5rem);
+  --t-12: .75rem;
+  --t-14: .875rem;
+  --t-15: .9375rem;
+  --t-16: 1rem;
+  --t-17: 1.0625rem;
+  --t-20: 1.25rem;
+  --t-25: 1.5625rem;
+  --t-31: 1.953rem;
+  --t-39: 2.441rem;
+  --t-49: 3.052rem;
+  --t-61: 3.815rem;
+  --t-76: 4.768rem;
+  --t-95: 5.96rem;
+  --lh-display-tight: .86;
+  --lh-display: .94;
+  --lh-title: 1.15;
+  --lh-body: 1.5;
+  --lh-long: 1.62;
+  --track-tight: -.025em;
+  --track-label: .04em;
+  --track-uppercase: .10em;
+  --weight-display: 600;
+  --weight-body: 400;
+  --weight-ui: 600;
+  --weight-strong: 700;
+  --feature-display: 'liga' 1, 'tnum' 1;
+  --feature-body: 'liga' 1, 'tnum' 1;
+  --feature-ui: 'liga' 1, 'tnum' 1;
+  --feature-mono: 'liga' 0, 'tnum' 1;
+  --variation-display: normal;
+  --variation-body: normal;
+  --variation-ui: normal;
+  --body-size: 15px;
+  --ui-size: 13px;
+  --label-size: 11px;
+  --s-0: 0;
+  --s-4: 4px;
+  --s-8: 8px;
+  --s-12: 12px;
+  --s-16: 16px;
+  --s-24: 24px;
+  --s-32: 32px;
+  --s-48: 48px;
+  --s-64: 64px;
+  --s-80: 80px;
+  --s-96: 96px;
+  --s-128: 128px;
+  --s-160: 160px;
+  --r-0: 0;
+  --r-2: 2px;
+  --r-4: 4px;
+  --r-6: 6px;
+  --section-y-sm: clamp(36px,5vw,72px);
+  --section-y-lg: clamp(48px,7vw,96px);
+  --gutter: clamp(16px,4vw,64px);
+  --container-lg: 1440px;
+  --container-md: 1120px;
+  --container-sm: 880px;
+  --shadow-ring: 0 0 0 1px var(--rule);
+  --shadow-soft: 0 1px 0 rgba(233,244,238,.10);
+  --motion-fast: .18s;
+  --motion-base: .72s;
+  --ease-out: cubic-bezier(.22,1,.36,1);
+}
+[data-theme="mint-terminal"] {
+  --field: #07100D;
+  --surface: #0D1A16;
+  --surface-raised: #0D1A16;
+  --ink: #E9F4EE;
+  --accent: #54E3B0;
+  --focus-ring: #54E3B0;
+}
+[data-theme="slate-instrument"] {
+  --field: #0B1117;
+  --surface: #121D26;
+  --surface-raised: #121D26;
+  --ink: #EAF2F6;
+  --accent: #6AD7C4;
+  --focus-ring: #6AD7C4;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-fast: 1ms; --motion-base: 1ms; }
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+}

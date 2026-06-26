@@ -1,0 +1,371 @@
+{
+  "checks": [
+    {
+      "detail": "HTML fragments use real line breaks, never visible escaped newline markers.",
+      "hard": true,
+      "name": "escaped-newline-text",
+      "pass": true,
+      "weight": 5
+    },
+    {
+      "detail": "Emitted HTML uses ASCII text or inline SVG for non-text marks.",
+      "hard": true,
+      "name": "glyph-safety",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "No emitted demo element renders as an empty placeholder box.",
+      "hard": true,
+      "name": "empty-element",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Every emitted section has enough visible text or meaningful child content for its declared size.",
+      "hard": true,
+      "name": "thin-section",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "Surface demos have a visible ring/hairline or readable text when their fill is close to the field.",
+      "hard": true,
+      "name": "low-contrast-surface",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Dither cells are high-contrast, monotonic, distinct, bordered, and labeled.",
+      "hard": true,
+      "name": "dither-visibility",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Text over ordered dither/patterns has a solid AA token scrim or is moved off the plate.",
+      "hard": true,
+      "name": "text-over-pattern",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Semantic landmarks, headings, labels, media alternatives, skip link, and status regions are accessible.",
+      "hard": true,
+      "name": "accessibility",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "detail": "Head metadata, social cards, canonical, and JSON-LD are complete.",
+      "hard": true,
+      "name": "seo",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "No CSS tonal blend functions.",
+      "hard": true,
+      "name": "gradient ban",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "No banned filler names.",
+      "hard": true,
+      "name": "banned copy",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Headings, deks, and labels are human-readable with no internal slugs or scaffolding words.",
+      "hard": true,
+      "name": "copy-quality",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "Declared and emitted pairs meet thresholds.",
+      "hard": true,
+      "name": "contrast aa",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "All signature selectors are emitted and used as exact class tokens.",
+      "hard": true,
+      "name": "signature realization",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "detail": "Preview family classes are allowed.",
+      "hard": true,
+      "name": "allowed families",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "CSS and preview dither classes match declared density steps.",
+      "hard": true,
+      "name": "dither ramp count",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "Display first family is authored, display/body stacks differ, and features are emitted.",
+      "hard": true,
+      "name": "font distinctiveness",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "Section sequence is archetype-specific.",
+      "hard": true,
+      "name": "structural distinctness",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "detail": "No generic tells; unique controls; content-native family markers.",
+      "hard": true,
+      "name": "anti generic",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "detail": "Mode is semantic and themes are explicit.",
+      "hard": true,
+      "name": "theme lock",
+      "pass": true,
+      "weight": 7
+    },
+    {
+      "detail": "Radius and elevation match archetype policy.",
+      "hard": true,
+      "name": "radius elevation policy",
+      "pass": true,
+      "weight": 7
+    },
+    {
+      "detail": "Every source_ref resolved.",
+      "hard": true,
+      "name": "citation anchor resolution",
+      "pass": true,
+      "weight": 15
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "accessibility",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "metrics": {
+        "budget_kb": 70.0,
+        "css_js_kb": 58.7
+      },
+      "name": "performance",
+      "note": "css+js 58.7KB; budget 70KB",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "found": {
+        "index.html": {
+          "canonical": "./",
+          "description_length": 130,
+          "jsonld_types": [
+            "SoftwareApplication"
+          ],
+          "og_description": true,
+          "og_image": "./og-card.svg",
+          "og_title": true,
+          "title": "HealthKite - Local Mcp Server That Turns Apple Health",
+          "twitter_card": "summary_large_image"
+        }
+      },
+      "hard": true,
+      "name": "seo",
+      "note": "index.html: title=True desc=130 jsonld=SoftwareApplication",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "gradient-ban",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "contrast-aa",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "findings": [],
+      "name": "generic-pattern-tells",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "banned-copy",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "copy-quality",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "hero-content",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "mobile-nav",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "duplicate-prose",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "name": "dither-as-tonal",
+      "pass": true,
+      "weight": 6
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "escaped-newline-text",
+      "pass": true,
+      "weight": 5
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "glyph-safety",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "empty-element",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "thin-section",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "low-contrast-surface",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "dither-visibility",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "text-over-pattern",
+      "pass": true,
+      "weight": 8
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "first-paint-static",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "motion-resilience",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "hard": true,
+      "name": "canvas-resilience",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "name": "signature-realization",
+      "pass": true,
+      "weight": 12
+    },
+    {
+      "findings": [],
+      "name": "allowed-families",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "name": "dither-ramp",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "name": "font-distinctiveness-features",
+      "pass": true,
+      "weight": 10
+    },
+    {
+      "findings": [],
+      "name": "radius-elevation-policy",
+      "pass": true,
+      "weight": 7
+    },
+    {
+      "findings": [],
+      "name": "citation-resolution",
+      "pass": true,
+      "weight": 15
+    }
+  ],
+  "failures": [],
+  "hard_failures": [],
+  "pass": true,
+  "score": 100,
+  "warnings": []
+}

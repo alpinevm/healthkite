@@ -11,7 +11,8 @@ The iOS app itself is closed-source (for now); everything an integrator needs to
 | Directory | What it is |
 | --- | --- |
 | [`mcp/`](mcp/) | **`healthkite-mcp`** — Rust MCP server, MIT-licensed. Stdio transport, installed with Cargo. Uses Bonjour/mDNS discovery and TLS-PSK to bridge the iOS app to any MCP-aware agent. |
-| [`docs/`](docs/) | Astro Starlight documentation site. Concepts, API reference, MCP integration guide. |
+| [`docs/`](docs/) | Mintlify documentation site — concepts, API reference, and the MCP integration guide. Live at https://docs.healthkite.app/ |
+| [`landing/`](landing/) | Static marketing site, served on https://healthkite.app/ |
 
 ## Quick start
 
@@ -46,7 +47,7 @@ Prerequisites: Rust/Cargo plus OpenSSL development libraries available to Cargo 
 
 Full setup guide: [`docs/quickstart.mdx`](docs/quickstart.mdx).
 
-Docs are built with [Astro Starlight](https://starlight.astro.build/) and hosted on Railway: https://docs.healthkite.app/
+Docs are built with [Mintlify](https://mintlify.com/) and live at https://docs.healthkite.app/
 
 ## Architecture
 

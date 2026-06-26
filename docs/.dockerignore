@@ -1,0 +1,6 @@
+Dockerfile
+.dockerignore
+node_modules
+export.zip
+.git
+.mintlify

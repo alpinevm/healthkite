@@ -1,0 +1,560 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HealthKite LAN API",
+    "version": "1.0.0",
+    "description": "Read-only HTTP/1.1 JSON over an authenticated TLS-PSK connection. Endpoints are normally reached through the `healthkite-mcp` server, which discovers the iPhone over Bonjour/mDNS and opens the TLS-PSK channel. Requests are GET-only; auth happens during discovery + the TLS-PSK handshake (no HTTP bearer header)."
+  },
+  "servers": [
+    {
+      "url": "http://healthkite.local:8080",
+      "description": "Your iPhone on the LAN \u2014 discovered via Bonjour, reached over TLS-PSK by the MCP server. Default port 8080."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "getStatus",
+        "summary": "Status snapshot",
+        "description": "Name, app version, total workout count, and the wire-format discriminator.",
+        "responses": {
+          "200": {
+            "description": "Status",
+            "content": {
+              "application/json": {
+                "example": {
+                  "name": "HealthKite MCP",
+                  "version": "1.0",
+                  "workoutCount": 124,
+                  "sampleEncoding": "columnar-v1"
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/workouts": {
+      "get": {
+        "operationId": "listWorkouts",
+        "summary": "List workouts",
+        "description": "Paginated workout summaries, newest first.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size (1-200).",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Items to skip.",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workout summaries",
+            "content": {
+              "application/json": {
+                "example": {
+                  "workouts": [
+                    {
+                      "uuid": "06E9D6D6-7E37-406C-8465-1DAAD7C223A1",
+                      "workoutActivityType": "HKWorkoutActivityTypeRunning",
+                      "startDate": "2026-05-09T16:11:50Z",
+                      "endDate": "2026-05-09T16:44:24Z",
+                      "duration": 1953.68,
+                      "totalDistance": {
+                        "value": 4855.06,
+                        "unit": "m"
+                      },
+                      "totalEnergyBurned": {
+                        "value": 482.62,
+                        "unit": "kcal"
+                      },
+                      "averageHeartRate": {
+                        "value": 164.81,
+                        "unit": "count/min"
+                      }
+                    }
+                  ],
+                  "limit": 50,
+                  "offset": 0,
+                  "total": 124,
+                  "hasMore": true
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/workouts/{uuid}": {
+      "get": {
+        "operationId": "getWorkout",
+        "summary": "Get workout detail",
+        "description": "Full columnar workout detail \u2014 the same payload as Share / Copy / Push in the iOS app.",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "description": "Workout UUID (case-insensitive) from /workouts.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workout detail",
+            "content": {
+              "application/json": {
+                "example": {
+                  "uuid": "06E9D6D6-7E37-406C-8465-1DAAD7C223A1",
+                  "workoutActivityType": "HKWorkoutActivityTypeRunning",
+                  "sampleEncoding": "columnar-v1",
+                  "startDate": "2026-05-09T16:11:50Z",
+                  "endDate": "2026-05-09T16:44:24Z",
+                  "duration": 1953.68,
+                  "totalDistance": {
+                    "value": 4855.06,
+                    "unit": "m"
+                  },
+                  "totalEnergyBurned": {
+                    "value": 482.62,
+                    "unit": "kcal"
+                  },
+                  "src": 0,
+                  "sources": [
+                    {
+                      "id": 0,
+                      "device": {
+                        "name": "Apple Watch",
+                        "model": "Watch",
+                        "hardwareVersion": "Watch6,11",
+                        "softwareVersion": "26.4"
+                      }
+                    }
+                  ],
+                  "samples": {
+                    "HKQuantityTypeIdentifierHeartRate": {
+                      "unit": "count/min",
+                      "t": [
+                        0,
+                        5,
+                        10,
+                        15
+                      ],
+                      "v": [
+                        108,
+                        112,
+                        120,
+                        124
+                      ]
+                    }
+                  },
+                  "statistics": {
+                    "HKQuantityTypeIdentifierHeartRate": {
+                      "average": {
+                        "value": 165.92,
+                        "unit": "count/min"
+                      },
+                      "minimum": {
+                        "value": 117,
+                        "unit": "count/min"
+                      },
+                      "maximum": {
+                        "value": 191,
+                        "unit": "count/min"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "UUID doesn't match any workout",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not_found"
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/quantity-types": {
+      "get": {
+        "operationId": "listQuantityTypes",
+        "summary": "List quantity types",
+        "description": "Catalog of standalone HealthKit quantity types \u2014 identifier, category, unit, and how much data exists.",
+        "responses": {
+          "200": {
+            "description": "Quantity type catalog",
+            "content": {
+              "application/json": {
+                "example": {
+                  "types": [
+                    {
+                      "identifier": "HKQuantityTypeIdentifierStepCount",
+                      "category": "activity",
+                      "aggregationStyle": "cumulative",
+                      "preferredUnit": "count",
+                      "permissionStatus": "granted",
+                      "sampleCount": 66471,
+                      "firstSampleDate": "2020-01-09T03:04:54Z",
+                      "lastSampleDate": "2026-05-11T03:35:37Z"
+                    },
+                    {
+                      "identifier": "HKQuantityTypeIdentifierHeartRate",
+                      "category": "heart",
+                      "aggregationStyle": "discrete",
+                      "preferredUnit": "count/min",
+                      "permissionStatus": "granted",
+                      "sampleCount": 64643,
+                      "firstSampleDate": "2020-12-25T14:23:17Z",
+                      "lastSampleDate": "2026-05-11T04:06:10Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/quantity/{type}": {
+      "get": {
+        "operationId": "getQuantitySeries",
+        "summary": "Get quantity series",
+        "description": "A standalone HealthKit quantity series in columnar shape. `t` is integer seconds from the window start (`from`).",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "description": "Full HKQuantityTypeIdentifier (short forms like StepCount also accepted).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "HKQuantityTypeIdentifierStepCount"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "ISO-8601 UTC window start. Default: to - 7 days.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "ISO-8601 UTC window end. Default: now.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5000,
+              "minimum": 1,
+              "maximum": 50000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quantity series",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type": "HKQuantityTypeIdentifierStepCount",
+                  "unit": "count",
+                  "from": "2026-05-04T00:00:00Z",
+                  "to": "2026-05-11T00:00:00Z",
+                  "sampleEncoding": "columnar-v1",
+                  "sources": [
+                    {
+                      "id": 0
+                    }
+                  ],
+                  "samples": {
+                    "t": [
+                      0,
+                      60,
+                      120
+                    ],
+                    "dur": [
+                      60,
+                      60,
+                      60
+                    ],
+                    "v": [
+                      12,
+                      8,
+                      15
+                    ]
+                  },
+                  "sampleCount": 1247,
+                  "limit": 5000,
+                  "offset": 0,
+                  "total": 1247,
+                  "hasMore": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown quantity type",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unknown_type"
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/sleep": {
+      "get": {
+        "operationId": "listSleepSessions",
+        "summary": "List sleep sessions",
+        "description": "Reconciled nightly sleep sessions (one session per night, 2-hour gap threshold) with phase intervals.",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "ISO-8601 UTC. Default: to - 30 days.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "ISO-8601 UTC. Default: now.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 30,
+              "minimum": 1,
+              "maximum": 365
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sleep sessions",
+            "content": {
+              "application/json": {
+                "example": {
+                  "from": "2026-04-11T00:00:00Z",
+                  "to": "2026-05-11T00:00:00Z",
+                  "sampleEncoding": "columnar-v1",
+                  "sources": [
+                    {
+                      "id": 0,
+                      "device": null
+                    }
+                  ],
+                  "sessions": [
+                    {
+                      "startDate": "2026-05-10T04:20:00Z",
+                      "endDate": "2026-05-10T13:31:30Z",
+                      "inBedDuration": 33090,
+                      "asleepDuration": 27660,
+                      "awakeDuration": 5430,
+                      "src": 0,
+                      "phases": {
+                        "inBed": {
+                          "t": [
+                            0
+                          ],
+                          "dur": [
+                            33090
+                          ]
+                        },
+                        "asleepCore": {
+                          "t": [
+                            5430,
+                            7950
+                          ],
+                          "dur": [
+                            1020,
+                            270
+                          ]
+                        },
+                        "asleepDeep": {
+                          "t": [
+                            6450
+                          ],
+                          "dur": [
+                            1500
+                          ]
+                        },
+                        "asleepREM": {
+                          "t": [
+                            9570,
+                            16590
+                          ],
+                          "dur": [
+                            1290,
+                            2940
+                          ]
+                        },
+                        "awake": {
+                          "t": [
+                            0
+                          ],
+                          "dur": [
+                            5430
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "limit": 30,
+                  "offset": 0,
+                  "total": 47,
+                  "hasMore": true
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    },
+    "/day-snapshot/{date}": {
+      "get": {
+        "operationId": "getDaySnapshot",
+        "summary": "Get day snapshot",
+        "description": "One-call overview of a single local-calendar day: sleep, workouts, activity totals, heart, body, and mobility. Numbers match the iOS Day view.",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "YYYY-MM-DD in the iPhone's local timezone.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-05-10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Day snapshot",
+            "content": {
+              "application/json": {
+                "example": {
+                  "date": "2026-05-10",
+                  "timezone": "America/Chicago",
+                  "sampleEncoding": "columnar-v1",
+                  "activity": {
+                    "steps": 9120,
+                    "distanceMeters": 8221.78,
+                    "activeEnergyKcal": 874.59,
+                    "exerciseMinutes": 30,
+                    "standHours": 3,
+                    "flightsClimbed": 5
+                  },
+                  "heart": {
+                    "restingBPM": 59,
+                    "averageBPM": 81.64,
+                    "hrvSDNN": 92.92,
+                    "vo2max": 44.14
+                  },
+                  "sleep": [
+                    {
+                      "startDate": "2026-05-10T04:20:00Z",
+                      "endDate": "2026-05-10T13:31:30Z",
+                      "inBedDuration": 33090,
+                      "asleepDuration": 27660
+                    }
+                  ],
+                  "workouts": [],
+                  "body": {
+                    "weightKg": 90.72,
+                    "bmi": null,
+                    "bodyFatPercent": null
+                  },
+                  "mobility": {
+                    "walkingSpeedMS": 1.249,
+                    "stepLengthM": 0.7
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Date doesn't parse as YYYY-MM-DD",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "bad_date"
+                }
+              }
+            }
+          }
+        },
+        "x-hidden": true
+      }
+    }
+  }
+}

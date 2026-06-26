@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en" data-theme="mint-terminal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HealthKite — Apple Health, exposed as clean JSON</title>
+  <meta name="description" content="HealthKite turns your iPhone into a local, read-only server for your own Apple Health data — discovered over Bonjour, secured with TLS-PSK, and read as HealthKit-native JSON by any MCP agent. Free, open-source, no cloud.">
+  <link rel="canonical" href="./">
+  <meta name="theme-color" content="#07100D">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="HealthKite — Apple Health, exposed as clean JSON">
+  <meta property="og:description" content="Your Apple Health data, streamed locally over TLS-PSK to any MCP agent. No cloud, no account.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HealthKite">
+  <meta property="og:image" content="./og-card.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HealthKite — Apple Health, exposed as clean JSON">
+  <meta name="twitter:description" content="Your Apple Health data, streamed locally over TLS-PSK to any MCP agent. No cloud, no account.">
+  <meta name="twitter:image" content="./og-card.svg">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HealthKite","description":"A local MCP server that exposes your Apple Health data as clean, HealthKit-native JSON for AI agents.","applicationCategory":"DeveloperApplication","operatingSystem":"iOS, macOS","offers":{"@type":"Offer","price":"0"},"publisher":{"@type":"Organization","name":"HealthKite"}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./recipes.css">
+  <link rel="stylesheet" href="./site.css">
+  <style>
+    .site-masthead{ min-height:auto; align-items:start; padding-top:clamp(44px,6vw,84px); padding-bottom:clamp(44px,6vw,84px); }
+    .site-hero-copy{ align-content:start; }
+    .site-proof-panel.code-panel{ align-content:start; gap:14px; }
+    .code-head{ display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:12px; color:var(--muted); }
+    .code-head .dot{ width:10px; height:10px; border-radius:50%; flex:0 0 auto; }
+    .code-head .dot.r{ background:#ff5f57; } .code-head .dot.y{ background:#febc2e; } .code-head .dot.g{ background:#2ace52; }
+    .code-head .code-req{ margin-left:8px; color:var(--accent); letter-spacing:.03em; }
+    .code-block{ margin:0; padding:16px 18px; background:#050C09; border:1px solid var(--rule); border-radius:10px; overflow-x:auto; font-family:var(--font-mono); font-size:12.5px; line-height:1.7; color:var(--ink); }
+    .code-block code{ display:block; white-space:pre; }
+    .code-block .j-key{ color:var(--accent); }
+    .code-block .j-str{ color:#bfe6d6; }
+    .code-block .j-num{ color:#ffcf94; }
+    @media (max-width:768px){ .code-block{ font-size:11.5px; } }
+    .gh-link{ display:inline-flex; align-items:center; }
+    .gh-link svg{ display:block; }
+    #section-01-dashboard-header .dd-title{ max-width:none; white-space:nowrap; font-size:clamp(1.5rem,3.2vw,3rem); }
+    @media (max-width:560px){ #section-01-dashboard-header .dd-title{ white-space:normal; } }
+  </style>
+  <script src="./motion.js" defer></script>
+</head>
+<body class="scaffold-site archetype-data-dashboard">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <strong>HealthKite</strong>
+    <nav class="site-nav" aria-label="Primary"><a href="https://docs.healthkite.app/quickstart/">Quickstart</a><a class="gh-link" href="https://github.com/alpinevm/healthkite" aria-label="GitHub"><svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a></nav>
+    <details class="nav-menu"><summary aria-label="Open primary navigation">Menu</summary><nav aria-label="Primary mobile"><a href="https://docs.healthkite.app/quickstart/">Quickstart</a><a href="https://github.com/alpinevm/healthkite">GitHub</a></nav></details>
+  </header>
+  <main id="main" class="site-shell">
+    <header class="site-masthead" aria-labelledby="site-title">
+      <div class="site-hero-copy" data-reveal>
+        <p class="site-kicker">Local-first · Bonjour · TLS-PSK</p>
+        <h1 id="site-title" class="site-title">Apple Health, exposed as clean JSON.</h1>
+        <p class="site-dek">HealthKite turns your iPhone into a local, read-only server for your own Apple Health data — discovered over Bonjour, secured with TLS-PSK, and read by any MCP agent on your Mac. No cloud. No account. Nothing leaves your network.</p>
+        <div class="site-actions"><a class="button" href="https://docs.healthkite.app/quickstart/">Get started</a><a class="button secondary" href="https://docs.healthkite.app/concepts/wire-format/">Read the wire format</a></div>
+      </div>
+      <aside id="materials" class="site-proof-panel code-panel" data-reveal>
+        <p class="site-proof-label">Sample response</p>
+        <div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-req">GET /day-snapshot/2026-05-10</span></div>
+        <pre class="code-block"><code>{
+  <span class="j-key">"date"</span>: <span class="j-str">"2026-05-10"</span>,
+  <span class="j-key">"timezone"</span>: <span class="j-str">"America/Chicago"</span>,
+  <span class="j-key">"sampleEncoding"</span>: <span class="j-str">"columnar-v1"</span>,
+  <span class="j-key">"activity"</span>: {
+    <span class="j-key">"steps"</span>: <span class="j-num">9120</span>,
+    <span class="j-key">"distanceMeters"</span>: <span class="j-num">8221.78</span>,
+    <span class="j-key">"activeEnergyKcal"</span>: <span class="j-num">874.59</span>,
+    <span class="j-key">"exerciseMinutes"</span>: <span class="j-num">30</span>,
+    <span class="j-key">"standHours"</span>: <span class="j-num">3</span>
+  },
+  <span class="j-key">"heart"</span>: {
+    <span class="j-key">"restingBPM"</span>: <span class="j-num">59</span>,
+    <span class="j-key">"averageBPM"</span>: <span class="j-num">81.64</span>,
+    <span class="j-key">"hrvSDNN"</span>: <span class="j-num">92.92</span>,
+    <span class="j-key">"vo2max"</span>: <span class="j-num">44.14</span>
+  },
+  <span class="j-key">"sleep"</span>: [
+    {
+      <span class="j-key">"asleepDuration"</span>: <span class="j-num">27660</span>,
+      <span class="j-key">"inBedDuration"</span>: <span class="j-num">33090</span>
+    }
+  ],
+  <span class="j-key">"workouts"</span>: []
+}</code></pre>
+        <dl class="companion-facts"><div><dt>Encoding</dt><dd>columnar-v1</dd></div><div><dt>Transport</dt><dd>TLS-PSK</dd></div></dl>
+      </aside>
+    </header>
+    <section id="section-01-dashboard-header" class="section family-dashboard-header template-dashboard-header scaffold-section" data-family="dashboard-header" aria-labelledby="section-01-dashboard-header-title" data-reveal>
+      <div class="section-lead"><p class="section-kicker">01 / Overview</p><h2 id="section-01-dashboard-header-title">Your health data, on your terms</h2><p>The server runs only while the app is open, on your Wi-Fi. Nothing syncs to a cloud and nothing is copied off your device.</p></div>
+      <div class="scaffold-section-body scaffold-section-body-dashboard-header">
+      <div class="dd-board-head">
+        <article><p class="dd-kicker">How it connects</p><h3 class="dd-title">iPhone → local bridge → agent</h3><p class="dd-summary">The app advertises a read-only service over Bonjour. Your MCP client connects over an authenticated TLS-PSK channel and reads HealthKit-native JSON — never a shared secret on the wire.</p></article>
+        <aside class="signature-stack"><dl class="dd-meta"><div><dt>Transport</dt><dd>TLS-PSK</dd></div><div><dt>Discovery</dt><dd>Bonjour</dd></div><div><dt>Access</dt><dd>read-only</dd></div></dl></aside>
+      </div>
+      </div>
+    </section>
+    <section id="section-02-kpi-tiles" class="section family-kpi-tiles template-dashboard-kpi scaffold-section" data-family="kpi-tiles" aria-labelledby="section-02-kpi-tiles-title" data-reveal>
+      <div class="section-lead"><p class="section-kicker">02 / Why HealthKite</p><h2 id="section-02-kpi-tiles-title">Built for agents, not dashboards</h2><p>Apple's own identifier vocabulary, columnar samples, and hoisted provenance — lean enough for an LLM to read in a single pass.</p></div>
+      <div class="scaffold-section-body scaffold-section-body-dashboard-kpi">
+      <div class="dd-kpi-grid">
+        <article class="dd-kpi-tile"><span>Cloud calls</span><strong>0</strong><small>Nothing leaves your network</small></article>
+        <article class="dd-kpi-tile"><span>MCP tools</span><strong>7</strong><small>workouts, sleep, vitals, day snapshots</small></article>
+        <article class="dd-kpi-tile"><span>License</span><strong>MIT</strong><small>Open-source · cargo install</small></article>
+        <article class="dd-kpi-tile is-live"><span>Transport</span><strong>TLS-PSK</strong><small>Bonjour-discovered, authenticated</small></article></div>
+      </div>
+    </section>
+    <section id="section-04-data-table" class="section family-data-table template-dashboard-table scaffold-section" data-family="data-table" aria-labelledby="section-04-data-table-title" data-reveal>
+      <div class="section-lead"><p class="section-kicker">03 / MCP tools</p><h2 id="section-04-data-table-title">What your agent can read</h2><p>Seven read-only tools cover workouts, sleep, standalone quantities, and whole-day rollups — all in the same columnar shape.</p></div>
+      <div class="scaffold-section-body scaffold-section-body-dashboard-table">
+      <div class="dd-table-wrap">
+        <table class="dd-table"><caption>MCP tools — read-only, HealthKit-native</caption><thead><tr><th>Tool</th><th>Returns</th><th>Method</th><th>Encoding</th><th>Status</th></tr></thead><tbody><tr><td>get_day_snapshot</td><td>One day: sleep, steps, heart, mobility</td><td>GET</td><td>json</td><td><span class="dd-pill is-live">live</span></td></tr><tr><td>list_workouts</td><td>Paginated workout summaries</td><td>GET</td><td>columnar-v1</td><td><span class="dd-pill is-live">live</span></td></tr><tr><td>get_workout</td><td>Full workout detail by UUID</td><td>GET</td><td>columnar-v1</td><td><span class="dd-pill is-live">live</span></td></tr><tr><td>get_quantity_series</td><td>Any HealthKit quantity series</td><td>GET</td><td>columnar-v1</td><td><span class="dd-pill is-live">live</span></td></tr><tr><td>list_sleep_sessions</td><td>Reconciled sleep + phase intervals</td><td>GET</td><td>json</td><td><span class="dd-pill is-live">live</span></td></tr></tbody></table></div>
+      </div>
+    </section>
+    <section id="section-05-legend-colophon" class="section family-legend-colophon template-dashboard-legend scaffold-section" data-family="legend/colophon" aria-labelledby="section-05-legend-colophon-title" data-reveal>
+      <div class="section-lead"><p class="section-kicker">04 / Get started</p><h2 id="section-05-legend-colophon-title">Running in three minutes</h2><p>Install the MCP server, toggle the LAN server in the app, and paste the pairing secret into your agent.</p></div>
+      <div class="scaffold-section-body scaffold-section-body-dashboard-legend">
+      <div class="dd-colophon">
+        <dl><div><dt>1 · Install</dt><dd>cargo install --git github.com/alpinevm/healthkite healthkite-mcp</dd></div><div><dt>2 · Toggle</dt><dd>Enable Local LAN Server in the HealthKite app</dd></div><div><dt>3 · Pair</dt><dd>Paste the pairing secret into your MCP client</dd></div></dl>
+        <aside><strong>Works with any MCP client</strong><p>Claude Code, Cursor, Codex — stdio transport, no extra config. The server discovers your iPhone by Bonjour and authenticates with TLS-PSK.</p><div class="signature-stack"><div class="dd-motif-source-row" aria-label="source row"><strong>MIT</strong><span>open-source</span><span>no cloud</span></div></div></aside>
+      </div>
+      </div>
+    </section>
+    <section id="section-06-dashboard-header" class="section family-dashboard-header template-dashboard-header scaffold-section" data-family="dashboard-header" aria-labelledby="section-06-dashboard-header-title" data-reveal>
+      <div class="section-lead"><p class="section-kicker">05 / Start</p><h2 id="section-06-dashboard-header-title">Bring your health data to your agent</h2><p>Free and open-source. Your data stays on your phone and your network.</p></div>
+      <div class="scaffold-section-body scaffold-section-body-dashboard-header">
+      <div class="dd-board-head">
+        <article><p class="dd-kicker">Next step</p><h3 class="dd-title">Read the quickstart</h3><p class="dd-summary">Three minutes from install to your first query. The docs cover the wire format, every MCP tool, and the auth lifecycle.</p><p class="site-actions"><a class="button" href="https://docs.healthkite.app/quickstart/">Open the docs</a></p></article>
+        <aside class="signature-stack"><dl class="dd-meta"><div><dt>Cost</dt><dd>Free</dd></div><div><dt>License</dt><dd>MIT</dd></div><div><dt>Cloud</dt><dd>None</dd></div></dl></aside>
+      </div>
+      </div>
+    </section>
+  </main>
+  <footer id="footer" class="site-footer" role="contentinfo">
+    <div><strong>HealthKite</strong><br>Apple Health, exposed honestly as JSON. Free &amp; open-source.</div>
+    <a class="button secondary" href="https://docs.healthkite.app/">Read the docs</a>
+  </footer>
+</body>
+</html>

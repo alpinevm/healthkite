@@ -1,0 +1,25 @@
+---
+title: "GET /workouts"
+description: "Paginated workout summaries, newest first."
+openapi: "GET /workouts"
+---
+
+## Query parameters
+
+| Name | Type | Default | Range | Notes |
+| --- | --- | --- | --- | --- |
+| `limit` | integer | `50` | 1-200 | Clamped silently if out of range |
+| `offset` | integer | `0` | ≥ 0 | Garbage values clamp to 0 |
+
+
+## MCP tool
+
+`list_workouts({ "limit": 10, "offset": 0 })`
+
+## Notes
+
+- Sorted by `startDate` descending.
+- Summaries include device + sourceRevision inline (no provenance hoisting at this layer — the list is intended as a quick browseable index, and per-summary provenance is rarely duplicated since users typically have one watch).
+- For full sample-series detail, follow up with [`GET /workouts/{uuid}`](/api-reference/get-workout).
+- `hasMore` is `true` iff `offset + workouts.length < total`.
+- An offset beyond the end returns an empty `workouts` array with `hasMore: false`. It does not 404.

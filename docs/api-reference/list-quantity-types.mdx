@@ -1,0 +1,31 @@
+---
+title: "GET /quantity-types"
+description: "Catalog of standalone HealthKit quantity types — what you can ask for, how much data exists, and the canonical unit."
+openapi: "GET /quantity-types"
+---
+
+Returns metadata for every quantity type HealthKite MCP knows about, regardless of whether the user has authorized read access to it.
+
+
+## Fields
+
+| Field | Notes |
+| --- | --- |
+| `identifier` | Full HealthKit identifier — pass to `/quantity/{type}` |
+| `category` | One of `activity`, `heart`, `mobility`, `body`, `vitals` |
+| `aggregationStyle` | `cumulative` (steps, energy — sum-over-interval) or `discrete` (HR, weight — point measurement) |
+| `preferredUnit` | The unit string the `/quantity/{type}` response will use |
+| `permissionStatus` | `granted` / `unknown`. iOS hides denied vs. not-determined for privacy, so `unknown` covers both |
+| `sampleCount` | Total samples the app can read for this type |
+| `firstSampleDate` / `lastSampleDate` | Brackets the range of readable data; `null` if no samples |
+
+Sorted by `category` then `identifier`. Deterministic.
+
+## MCP tool
+
+`list_quantity_types`
+
+## Notes
+
+- Types with `permissionStatus: "unknown"` and `sampleCount: 0` are types the user has never recorded — that's normal for things like `BloodGlucose` if you don't manage diabetes.
+- A type with `sampleCount: 0` and `permissionStatus: "granted"` means you have read access but no samples exist yet.

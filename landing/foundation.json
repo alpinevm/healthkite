@@ -1,0 +1,899 @@
+{
+  "_generated_titles": [
+    "Healthkite Ai Agents signals",
+    "Healthkite analytics board",
+    "Analytics board: Local Mcp",
+    "Value strip with healthkite",
+    "Healthkite value strip",
+    "Density chart: Json",
+    "Json density chart",
+    "Sample rows with refresh source",
+    "Healthkite sample rows",
+    "Legend notes with source records",
+    "Healthkite legend notes",
+    "Signal opening for Healthkite",
+    "Healthkite source records notes"
+  ],
+  "archetype": "data-dashboard",
+  "banned_patterns": [
+    "devtool console logs as the main surface",
+    "decorative gradient chart",
+    "soft glow depth",
+    "large rounded SaaS cards",
+    "hero with product screenshot",
+    "centered hero plus three equal cards",
+    "saturated multi-accent palette",
+    "empty chart shell"
+  ],
+  "brand": "HealthKite",
+  "canvas_hero": {
+    "contrast": "dark analytics field constrained behind solid metric cards",
+    "enabled": false,
+    "fallback": "2D canvas ordered dither, then inline SVG ordered dither field",
+    "pattern": "domain-warped-fbm+bayer-4x4",
+    "quantization": "in-shader Bayer 4x4 quantized posterized solid cells",
+    "reduced_motion": "draw one static frame and stop",
+    "shader": {
+      "dither": "Bayer 4x4 threshold in fragment shader",
+      "levels": 5,
+      "noise": "domain-warped FBM/value-noise",
+      "palette": "field/accent/ink iridescent steps",
+      "reactivity": "subtle scroll plus fine-pointer warp"
+    },
+    "supported": true,
+    "tech": "webgl",
+    "tiers": "WebGL -> 2D canvas ordered dither -> inline SVG ordered dither"
+  },
+  "components": {
+    "button": {
+      "recipe": "Compact mono-label action with dark field, one mint accent, visible focus, and no glow.",
+      "source_refs": [
+        "methods/house-style.md#Interaction states",
+        "methods/house-style.md#Color model"
+      ]
+    },
+    "input": {
+      "recipe": "Dense 40px filter input with 1px rule, 4px radius, and explicit focus outline.",
+      "source_refs": [
+        "methods/house-style.md#Interaction states",
+        "methods/house-style.md#Radius"
+      ]
+    },
+    "nav": {
+      "recipe": "Sticky operational header with metric timestamp, scope tabs, and hairline separation.",
+      "source_refs": [
+        "design-bites/linear.app#Layout Principles",
+        "methods/house-style.md#Layout families"
+      ]
+    },
+    "section": {
+      "recipe": "Information-dense analytics sections: KPI tiles, ordered-dither heatmap, dense table, and compact legends.",
+      "source_refs": [
+        "methods/house-style.md#Layout families",
+        "methods/house-style.md#Spectrum heatmap"
+      ]
+    },
+    "surface": {
+      "recipe": "Dark matte panels separated by hairlines and ring shadows; chart depth is stepped solid/dither cells only.",
+      "source_refs": [
+        "methods/house-style.md#Depth",
+        "methods/house-style.md#Spectrum heatmap"
+      ]
+    }
+  },
+  "content_slots": {
+    "colophon_caption": [
+      "Metric source record",
+      "Refresh ledger",
+      "Status source notes"
+    ],
+    "colophon_item_a": [
+      "Signals",
+      "Metric set",
+      "Data window"
+    ],
+    "colophon_item_b": [
+      "Owner",
+      "Freshness",
+      "Threshold"
+    ],
+    "colophon_item_c": [
+      "Action",
+      "Source",
+      "State"
+    ],
+    "colophon_source_a": [
+      "load API",
+      "demand warehouse",
+      "finance mirror"
+    ],
+    "colophon_source_b": [
+      "events stream",
+      "quality monitor",
+      "capacity model"
+    ],
+    "colophon_source_c": [
+      "operator notes",
+      "status ledger",
+      "threshold policy"
+    ],
+    "colophon_state_a": [
+      "live",
+      "audited",
+      "current"
+    ],
+    "colophon_state_b": [
+      "ops desk",
+      "five minute window",
+      "mint exception only"
+    ],
+    "dek": [
+      "KPI tiles, dense records, and stepped cells keep the analytics surface legible without a console log metaphor.",
+      "Every value has a label, every bin is countable, and the status legend names the scale before color does.",
+      "The page stays calm under density: dark field, mint accent, hairline separators, and ordered dither charts."
+    ],
+    "empty_state": [
+      "Every metric row is visible before script runs; no chart waits for hover.",
+      "No cell is empty: each bin carries a label, state, and value.",
+      "The table remains readable when motion is reduced."
+    ],
+    "folio": [
+      "Live / analytics board",
+      "Scope / demand signals",
+      "Shift / load monitor"
+    ],
+    "folio_no": [
+      "08",
+      "14",
+      "21"
+    ],
+    "gallery_a": [
+      "North cells",
+      "Demand band",
+      "Queue ridge"
+    ],
+    "gallery_a_body": [
+      "Stepped solid cells mark each bin; no continuous tone is required.",
+      "Ordered dither creates the higher bands while labels keep the values readable.",
+      "The chart behaves like a table first and an image second."
+    ],
+    "gallery_b": [
+      "West cells",
+      "Freshness band",
+      "Latency ridge"
+    ],
+    "gallery_b_body": [
+      "The denser cells use Bayer texture and still expose their bin labels.",
+      "A single accent marks current exceptions without adding a second palette.",
+      "Every cell remains visible when motion is reduced."
+    ],
+    "gallery_c": [
+      "Legend bins",
+      "Status scale",
+      "Threshold list"
+    ],
+    "gallery_c_body": [
+      "Legend rows name the status, density, and action owner.",
+      "Solid fills and dither utilities replace chart gradients.",
+      "The reader can audit the data without hovering or waiting for script."
+    ],
+    "index_a": [
+      "KPI overview",
+      "Metric lane",
+      "Live measures"
+    ],
+    "index_a_note": [
+      "Four tiles, delta labels, and current state",
+      "Compact values with source timestamps",
+      "Priority readings above the fold"
+    ],
+    "index_b": [
+      "Heat map bins",
+      "Cell matrix",
+      "Dither chart"
+    ],
+    "index_b_note": [
+      "Ordered texture and solid steps only",
+      "Twelve cells with visible bin labels",
+      "Density values are countable and captioned"
+    ],
+    "index_c": [
+      "Source ledger",
+      "Status legend",
+      "Refresh notes"
+    ],
+    "index_c_note": [
+      "Owners, freshness, and threshold policy",
+      "Legend states with no hue-only meaning",
+      "Closing record and update cadence"
+    ],
+    "index_title": [
+      "Board routes",
+      "Signal sections",
+      "Operational index"
+    ],
+    "masthead": [
+      "Northbound demand is above plan.",
+      "Capacity signals changed before noon.",
+      "The board shows where attention moved."
+    ],
+    "spec_a": [
+      "Demand index",
+      "Queue depth",
+      "Signal load"
+    ],
+    "spec_a_value": [
+      "142 percent against baseline",
+      "37 active records",
+      "8 cells above threshold"
+    ],
+    "spec_b": [
+      "Recovery window",
+      "Freshness target",
+      "Data confidence"
+    ],
+    "spec_b_value": [
+      "24 minutes to green band",
+      "Updated every 5 minutes",
+      "Source coverage above 96 percent"
+    ],
+    "spec_c": [
+      "Attention lane",
+      "Owner queue",
+      "Action band"
+    ],
+    "spec_c_value": [
+      "North and west clusters",
+      "Ops desk with finance mirror",
+      "Mint markers only for live exceptions"
+    ],
+    "spec_title": [
+      "Current signal matrix",
+      "Load distribution",
+      "Operational readings"
+    ]
+  },
+  "copy": {
+    "colophon_caption": "Status source notes",
+    "colophon_item_a": "Signals",
+    "colophon_item_b": "Freshness",
+    "colophon_item_c": "State",
+    "colophon_source_a": "demand warehouse",
+    "colophon_source_b": "capacity model",
+    "colophon_source_c": "status ledger",
+    "colophon_state_a": "current",
+    "colophon_state_b": "mint exception only",
+    "dek": "KPI tiles, dense records, and stepped cells keep the analytics surface legible without a console log metaphor.",
+    "empty_state": "Every metric row is visible before script runs; no chart waits for hover.",
+    "folio": "Scope / demand signals",
+    "folio_no": "08",
+    "gallery_a": "Queue ridge",
+    "gallery_a_body": "Ordered dither creates the higher bands while labels keep the values readable.",
+    "gallery_b": "Latency ridge",
+    "gallery_b_body": "A single accent marks current exceptions without adding a second palette.",
+    "gallery_c": "Legend bins",
+    "gallery_c_body": "The reader can audit the data without hovering or waiting for script.",
+    "index_a": "KPI overview",
+    "index_a_note": "Compact values with source timestamps",
+    "index_b": "Heat map bins",
+    "index_b_note": "Twelve cells with visible bin labels",
+    "index_c": "Refresh notes",
+    "index_c_note": "Legend states with no hue-only meaning",
+    "index_title": "Operational index",
+    "masthead": "Northbound demand is above plan.",
+    "motif_caption": "refresh source",
+    "spec_a": "Demand index",
+    "spec_a_value": "37 active records",
+    "spec_b": "Data confidence",
+    "spec_b_value": "Updated every 5 minutes",
+    "spec_c": "Action band",
+    "spec_c_value": "Ops desk with finance mirror",
+    "spec_title": "Current signal matrix"
+  },
+  "corpus_ref_warnings": [],
+  "corpus_refs_resolved": [
+    {
+      "label": "design-bites/linear.app#Component Stylings",
+      "pointer": "design-bites/linear.app#Component Stylings"
+    },
+    {
+      "label": "design-bites/linear.app#Layout Principles",
+      "pointer": "design-bites/linear.app#Layout Principles"
+    },
+    {
+      "label": "design-bites/vercel.com#Typography Rules",
+      "pointer": "design-bites/vercel.com#Typography Rules"
+    },
+    {
+      "label": "methods/house-style.md#Color model",
+      "pointer": "methods/house-style.md#Color model"
+    },
+    {
+      "label": "methods/house-style.md#Depth",
+      "pointer": "methods/house-style.md#Depth"
+    },
+    {
+      "label": "methods/house-style.md#Dither",
+      "pointer": "methods/house-style.md#Dither"
+    },
+    {
+      "label": "methods/house-style.md#Interaction states",
+      "pointer": "methods/house-style.md#Interaction states"
+    },
+    {
+      "label": "methods/house-style.md#Layout families",
+      "pointer": "methods/house-style.md#Layout families"
+    },
+    {
+      "label": "methods/house-style.md#Motion",
+      "pointer": "methods/house-style.md#Motion"
+    },
+    {
+      "label": "methods/house-style.md#Radius",
+      "pointer": "methods/house-style.md#Radius"
+    },
+    {
+      "label": "methods/house-style.md#Spectrum heatmap",
+      "pointer": "methods/house-style.md#Spectrum heatmap"
+    },
+    {
+      "label": "methods/house-style.md#Type scale",
+      "pointer": "methods/house-style.md#Type scale"
+    }
+  ],
+  "dials": {
+    "density": 9,
+    "motion": 2,
+    "variance": 3
+  },
+  "expected_structure": [
+    {
+      "class": "scaffold-section",
+      "family": "dashboard-header",
+      "signature": "",
+      "template": "dashboard-header"
+    },
+    {
+      "class": "scaffold-section",
+      "family": "kpi-tiles",
+      "motif": false,
+      "signature": "",
+      "template": "dashboard-kpi"
+    },
+    {
+      "class": "scaffold-section",
+      "family": "dither-heatmap",
+      "motif": true,
+      "signature": "",
+      "template": "dashboard-heatmap"
+    },
+    {
+      "class": "scaffold-section",
+      "family": "data-table",
+      "motif": false,
+      "signature": "",
+      "template": "dashboard-table"
+    },
+    {
+      "class": "scaffold-section",
+      "family": "legend/colophon",
+      "motif": true,
+      "signature": "",
+      "template": "dashboard-legend"
+    },
+    {
+      "class": "scaffold-section",
+      "family": "dashboard-header",
+      "signature": "",
+      "template": "dashboard-header"
+    }
+  ],
+  "house_rules": {
+    "anti_generic_rules": [
+      "Use content-native layout families; never default to centered hero plus three equal cards.",
+      "Declare executable signature moves with CSS, preview markup, assert selectors, and source refs.",
+      "Use role and theory token names instead of component-colored tokens.",
+      "Keep one semantic accent; pictures or data dots may carry extra chroma, typography may not.",
+      "Use hard rules, stepped swatches, and real ordered dither instead of soft blended tonal effects.",
+      "Bind every family-* class to the archetype allowed_families list."
+    ],
+    "css_gradient_functions_banned": true,
+    "dither_policy": {
+      "canvas_hero": "If enabled, live hero fields must try WebGL first with domain-warped FBM/value-noise, read field/accent/ink palette tokens, and quantize with a Bayer 4x4 threshold inside the fragment shader. They must fall back to 2D canvas ordered dither and then inline SVG ordered dither, draw one static frame for reduced motion/coarse pointers, keep hero copy on solid AA-contrast cards, and use no CSS gradient functions.",
+      "density_steps": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "implementation": "Inline SVG pattern with stepped solid rect cells in a data URI.",
+      "no_css_tonal_blends": true,
+      "summary": "Tonal range must be solid stepped swatches or a real ordered/Bayer dither utility."
+    },
+    "required_checks": [
+      "gradient-ban",
+      "copy-ban",
+      "contrast-aa",
+      "signature-realization",
+      "allowed-family-enforcement",
+      "dither-ramp-count",
+      "font-distinctiveness",
+      "structural-distinctness",
+      "citation-anchor-resolution",
+      "theme-lock",
+      "atomic-write",
+      "glyph-safety",
+      "empty-element",
+      "thin-section",
+      "escaped-newline-text",
+      "dither-visibility",
+      "void-ratio",
+      "render-smoke",
+      "copy-quality",
+      "accessibility",
+      "canvas-resilience",
+      "seo"
+    ],
+    "schema_version": "2.0"
+  },
+  "layout_grammar": {
+    "allowed_families": [
+      "dashboard-header",
+      "kpi-tiles",
+      "dither-heatmap",
+      "data-table",
+      "legend/colophon"
+    ],
+    "cta_policy": "One mint accent for live exception or primary action; all other status marks use text and solid/dither bins.",
+    "eyebrow_limit": 1,
+    "forbidden_compositions": [
+      "centered hero plus three equal cards",
+      "console log transcript as dashboard",
+      "continuous gradient heatmap",
+      "soft neon glow",
+      "decorative chart with no labels",
+      "multiple accent status palette"
+    ],
+    "max_repeat": 2,
+    "required_distinct_families": 5,
+    "source_refs": [
+      "methods/house-style.md#Layout families",
+      "methods/house-style.md#Spectrum heatmap",
+      "design-bites/linear.app#Layout Principles"
+    ]
+  },
+  "mode": "dark",
+  "mood": "scaffold",
+  "name": "Data Dashboard",
+  "purpose": "a local MCP server that turns Apple Health data into clean JSON for AI agents",
+  "rubric": {
+    "checks": [
+      {
+        "name": "ordered dither charts",
+        "source_refs": [
+          "methods/house-style.md#Spectrum heatmap"
+        ],
+        "weight": 15
+      },
+      {
+        "name": "dense visible metrics",
+        "source_refs": [
+          "methods/house-style.md#Layout families"
+        ],
+        "weight": 15
+      },
+      {
+        "name": "single accent status",
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "weight": 15
+      },
+      {
+        "name": "resolved corpus",
+        "source_refs": [
+          "methods/house-style.md#Interaction states"
+        ],
+        "weight": 15
+      }
+    ]
+  },
+  "schema_version": "2.0",
+  "seed": 4015656040,
+  "selected_motif": {
+    "copy_vocabulary": {
+      "motif_caption": [
+        "refresh source",
+        "owner desk",
+        "quality gate"
+      ]
+    },
+    "css": ".dd-motif-source-row { display: grid; grid-template-columns: 5rem 1fr auto; gap: var(--s-12); align-items: center; padding: var(--s-12); background: var(--surface); box-shadow: var(--shadow-ring); font-family: var(--font-mono); font-size: var(--label-size); } .dd-motif-source-row strong { color: var(--accent); font-weight: var(--weight-strong); }",
+    "name": "source-row",
+    "preview_markup": "<div class=\"dd-motif-source-row\" aria-label=\"source row\"><strong>LIVE</strong><span>{motif_caption}</span><span>5 min</span></div>",
+    "source_refs": [
+      "methods/house-style.md#Layout families",
+      "methods/house-style.md#Interaction states"
+    ]
+  },
+  "signature_moves": [
+    {
+      "assert_selector": ".dd-kpi-strip",
+      "css": ".dd-kpi-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--rule); } .dd-kpi-strip span { display: grid; gap: var(--s-4); padding: var(--s-12); background: var(--surface); font-family: var(--font-mono); font-size: var(--label-size); color: var(--muted); } .dd-kpi-strip b { display: block; font-family: var(--font-display); font-size: var(--t-31); line-height: var(--lh-display-tight); color: var(--ink); font-weight: var(--weight-display); } .dd-kpi-strip span:last-child { background: var(--accent); color: var(--field); } .dd-kpi-strip span:last-child b { color: var(--field); }",
+      "move": "KPI tiles carry label, value, delta, and status in compact cells; they are not generic cards.",
+      "name": "dd-kpi-strip",
+      "preview_markup": "<div class=\"dd-kpi-strip\" aria-label=\"kpi strip\"><span><b>142</b>demand</span><span><b>37</b>records</span><span><b>08</b>watch cells</span><span><b>LIVE</b>current</span></div>",
+      "source_refs": [
+        "methods/house-style.md#Layout families",
+        "design-bites/linear.app#Layout Principles"
+      ]
+    },
+    {
+      "assert_selector": ".dd-dither-heatmap",
+      "css": ".dd-dither-heatmap { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 1px; background: var(--rule); } .dd-dither-heatmap > span { min-height: 58px; display: grid; align-content: end; padding: var(--s-8); font-family: var(--font-mono); font-size: var(--label-size); color: var(--ink); background-color: var(--surface); } .dd-dither-heatmap b { width: max-content; max-width: 100%; padding: 2px 5px; background: var(--field); color: var(--ink); border: 1px solid var(--rule); font-weight: var(--weight-ui); } .dd-dither-heatmap span:nth-child(5n) { background-color: var(--accent); color: var(--field); } .dd-dither-heatmap span:nth-child(3n) { background-color: var(--surface-raised); }",
+      "move": "Heatmap cells are stepped solid fills or ordered Bayer dither utilities; there is no CSS gradient and no hue-only legend.",
+      "name": "dd-dither-heatmap",
+      "preview_markup": "<div class=\"dd-dither-heatmap\" aria-label=\"ordered dither heatmap\"><span class=\"dither-2\"><b>02</b></span><span class=\"dither-4\"><b>04</b></span><span>06</span><span class=\"dither-6\"><b>06</b></span><span>live</span><span class=\"dither-8\"><b>08</b></span><span>11</span><span class=\"dither-10\"><b>10</b></span><span>13</span><span>watch</span><span class=\"dither-4\"><b>04</b></span><span>07</span></div>",
+      "source_refs": [
+        "methods/house-style.md#Spectrum heatmap",
+        "methods/house-style.md#Dither"
+      ]
+    },
+    {
+      "assert_selector": ".dd-status-ring",
+      "css": ".dd-status-ring { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-12); align-items: center; padding: var(--s-12); background: var(--surface); box-shadow: var(--shadow-ring); font-family: var(--font-mono); font-size: var(--label-size); color: var(--muted); } .dd-status-ring b { min-width: .75rem; min-height: .75rem; display: inline-grid; place-items: center; padding: 1px 4px; background: var(--accent); color: var(--field); box-shadow: 0 0 0 1px var(--accent); font-size: 10px; line-height: 1; font-weight: var(--weight-ui); } .dd-status-ring strong { color: var(--ink); font-weight: var(--weight-strong); }",
+      "move": "Depth is a crisp ring and hairline grid; status is named text plus one accent marker, not glow.",
+      "name": "dd-status-ring",
+      "preview_markup": "<div class=\"dd-status-ring\" aria-label=\"status ring\"><b>live</b><strong>active threshold</strong><span>owner: ops desk</span></div>",
+      "source_refs": [
+        "methods/house-style.md#Depth",
+        "methods/house-style.md#Interaction states"
+      ]
+    }
+  ],
+  "site_dek": "HealthKite frames local MCP server that turns Apple Health data as an operations dashboard with named actions and readable records",
+  "site_title": "Healthkite Ai Agents signals",
+  "source_ref_warnings": [],
+  "source_refs": [
+    "design-bites/linear.app#Component Stylings",
+    "design-bites/linear.app#Layout Principles",
+    "design-bites/vercel.com#Typography Rules",
+    "methods/house-style.md#Color model",
+    "methods/house-style.md#Depth",
+    "methods/house-style.md#Dither",
+    "methods/house-style.md#Interaction states",
+    "methods/house-style.md#Layout families",
+    "methods/house-style.md#Motion",
+    "methods/house-style.md#Radius",
+    "methods/house-style.md#Spectrum heatmap",
+    "methods/house-style.md#Type scale"
+  ],
+  "source_refs_resolved": [
+    {
+      "label": "design-bites/linear.app#Component Stylings",
+      "pointer": "design-bites/linear.app#Component Stylings"
+    },
+    {
+      "label": "design-bites/linear.app#Layout Principles",
+      "pointer": "design-bites/linear.app#Layout Principles"
+    },
+    {
+      "label": "design-bites/vercel.com#Typography Rules",
+      "pointer": "design-bites/vercel.com#Typography Rules"
+    },
+    {
+      "label": "methods/house-style.md#Color model",
+      "pointer": "methods/house-style.md#Color model"
+    },
+    {
+      "label": "methods/house-style.md#Depth",
+      "pointer": "methods/house-style.md#Depth"
+    },
+    {
+      "label": "methods/house-style.md#Dither",
+      "pointer": "methods/house-style.md#Dither"
+    },
+    {
+      "label": "methods/house-style.md#Interaction states",
+      "pointer": "methods/house-style.md#Interaction states"
+    },
+    {
+      "label": "methods/house-style.md#Layout families",
+      "pointer": "methods/house-style.md#Layout families"
+    },
+    {
+      "label": "methods/house-style.md#Motion",
+      "pointer": "methods/house-style.md#Motion"
+    },
+    {
+      "label": "methods/house-style.md#Radius",
+      "pointer": "methods/house-style.md#Radius"
+    },
+    {
+      "label": "methods/house-style.md#Spectrum heatmap",
+      "pointer": "methods/house-style.md#Spectrum heatmap"
+    },
+    {
+      "label": "methods/house-style.md#Type scale",
+      "pointer": "methods/house-style.md#Type scale"
+    }
+  ],
+  "themes": [
+    {
+      "name": "mint-terminal",
+      "swatches": [
+        "#07100D",
+        "#0D1A16",
+        "#E9F4EE",
+        "#54E3B0"
+      ],
+      "theory": "Dark matte field, low-chroma panels, pale data ink, and one mint exception accent keep high-density analytics calm and precise."
+    },
+    {
+      "name": "slate-instrument",
+      "swatches": [
+        "#0B1117",
+        "#121D26",
+        "#EAF2F6",
+        "#6AD7C4"
+      ],
+      "theory": "Slate field and aqua accent preserve the single-signal rule while making dense tables and heatmap cells feel instrument-grade."
+    }
+  ],
+  "tokens": {
+    "color": {
+      "accent": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "mint status accent for current exception, focus, and primary action only",
+        "value": "#54E3B0"
+      },
+      "field": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "dark matte analytics field",
+        "value": "#07100D"
+      },
+      "focus-ring": {
+        "source_refs": [
+          "methods/house-style.md#Interaction states"
+        ],
+        "theory": "mint focus ring matches the one accent",
+        "value": "#54E3B0"
+      },
+      "ink": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "pale green-white data ink for dark surfaces",
+        "value": "#E9F4EE"
+      },
+      "muted": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "cool muted labels that remain AA on dark field",
+        "value": "#9AB4A8"
+      },
+      "rule": {
+        "source_refs": [
+          "methods/house-style.md#Depth"
+        ],
+        "theory": "pale hairline for dense grids and ring depth",
+        "value": "rgba(233,244,238,.16)"
+      },
+      "status": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "mint live marker, text-labeled and never hue-only",
+        "value": "#54E3B0"
+      },
+      "surface": {
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ],
+        "theory": "dark green-black panel step",
+        "value": "#0D1A16"
+      },
+      "surface-raised": {
+        "source_refs": [
+          "methods/house-style.md#Depth"
+        ],
+        "theory": "raised instrument panel for table and chart modules",
+        "value": "#132720"
+      }
+    },
+    "dither": {
+      "chart_technique": "ordered-dither and stepped solid cells only; no CSS gradient functions",
+      "css_strategy": "inline-svg-pattern-solid-rects",
+      "density_steps": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "pattern": "bayer-4x4",
+      "source_refs": [
+        "methods/house-style.md#Dither",
+        "methods/house-style.md#Spectrum heatmap"
+      ]
+    },
+    "elevation": {
+      "levels": [
+        "0 0 0 1px var(--rule)",
+        "0 1px 0 rgba(233,244,238,.10)"
+      ],
+      "source_refs": [
+        "methods/house-style.md#Depth"
+      ],
+      "technique": "Hairlines and ring shadows only; chart hierarchy comes from solid cell steps and ordered dither."
+    },
+    "motion": {
+      "durations": {
+        "base": ".48s",
+        "fast": ".12s"
+      },
+      "easing": "cubic-bezier(.22,1,.36,1)",
+      "reduced_motion": "one-frame state; no hidden first paint; data stays visible without motion",
+      "source_refs": [
+        "methods/house-style.md#Motion"
+      ]
+    },
+    "radius": {
+      "rules": "2px dense cells, 4px controls, 6px maximum panels; never large SaaS cards.",
+      "scale": [
+        "0",
+        "2px",
+        "4px",
+        "6px"
+      ],
+      "source_refs": [
+        "methods/house-style.md#Radius"
+      ]
+    },
+    "required_contrast_pairs": [
+      {
+        "bg": "field",
+        "fg": "ink",
+        "label": "data ink on field",
+        "min": 4.5,
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ]
+      },
+      {
+        "bg": "field",
+        "fg": "muted",
+        "label": "labels on field",
+        "min": 4.5,
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ]
+      },
+      {
+        "bg": "field",
+        "fg": "accent",
+        "label": "mint status on field",
+        "min": 4.5,
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ]
+      },
+      {
+        "bg": "accent",
+        "fg": "field",
+        "label": "dark text on mint",
+        "min": 4.5,
+        "source_refs": [
+          "methods/house-style.md#Color model"
+        ]
+      }
+    ],
+    "space": {
+      "base": "4px",
+      "scale": [
+        "0",
+        "4px",
+        "8px",
+        "12px",
+        "16px",
+        "24px",
+        "32px",
+        "48px",
+        "64px",
+        "80px",
+        "96px",
+        "128px",
+        "160px"
+      ],
+      "section": [
+        "clamp(36px,5vw,72px)",
+        "clamp(48px,7vw,96px)"
+      ],
+      "source_refs": [
+        "methods/house-style.md#Layout families"
+      ]
+    },
+    "type": {
+      "families": {
+        "body": "'IBM Plex Sans', system-ui, sans-serif",
+        "display": "'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif",
+        "mono": "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace",
+        "source_refs": [
+          "methods/house-style.md#Type scale",
+          "design-bites/vercel.com#Typography Rules"
+        ]
+      },
+      "features": {
+        "body": "'liga' 1, 'tnum' 1",
+        "display": "'liga' 1, 'tnum' 1",
+        "mono": "'liga' 0, 'tnum' 1",
+        "ui": "'liga' 1, 'tnum' 1"
+      },
+      "imports": [
+        "@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');"
+      ],
+      "line_height": {
+        "body": "1.5",
+        "display": ".94",
+        "display-tight": ".86",
+        "long": "1.62",
+        "source_refs": [
+          "methods/house-style.md#Type scale"
+        ],
+        "title": "1.15"
+      },
+      "scale": {
+        "display-lg": "clamp(2.75rem,7vw,6rem)",
+        "display-md": "clamp(2rem,4vw,3.5rem)",
+        "display-xl": "clamp(3.5rem,10vw,8rem)",
+        "source_refs": [
+          "methods/house-style.md#Type scale"
+        ],
+        "t-12": ".75rem",
+        "t-14": ".875rem",
+        "t-15": ".9375rem",
+        "t-16": "1rem",
+        "t-17": "1.0625rem",
+        "t-20": "1.25rem",
+        "t-25": "1.5625rem",
+        "t-31": "1.953rem",
+        "t-39": "2.441rem",
+        "t-49": "3.052rem",
+        "t-61": "3.815rem",
+        "t-76": "4.768rem",
+        "t-95": "5.96rem",
+        "title": "clamp(1.125rem,2vw,1.5rem)"
+      },
+      "sizes": {
+        "body": "15px",
+        "label": "11px",
+        "ui": "13px"
+      },
+      "tracking": {
+        "label": ".04em",
+        "source_refs": [
+          "methods/house-style.md#Type scale"
+        ],
+        "tight": "-.025em",
+        "uppercase": ".10em"
+      },
+      "variation": {
+        "body": "normal",
+        "display": "normal",
+        "ui": "normal"
+      },
+      "weights": {
+        "body": 400,
+        "display": 600,
+        "strong": 700,
+        "ui": 600
+      }
+    }
+  }
+}

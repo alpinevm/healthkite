@@ -1,0 +1,7 @@
+{
+  "name": "healthkite-landing",
+  "private": true,
+  "scripts": {
+    "start": "node serve.cjs"
+  }
+}

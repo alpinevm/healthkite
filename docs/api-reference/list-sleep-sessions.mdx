@@ -1,0 +1,52 @@
+---
+title: "GET /sleep"
+description: "Reconciled nightly sleep sessions with phase intervals."
+openapi: "GET /sleep"
+---
+
+HealthKit emits sleep as overlapping `HKCategorySample` records (one outer `inBed` envelope plus inner phase samples). This endpoint reconciles them into one **session per night** using a 2-hour gap threshold.
+
+## Query parameters
+
+| Name | Type | Default | Range |
+| --- | --- | --- | --- |
+| `from` | ISO-8601 UTC | `to - 30 days` | any |
+| `to` | ISO-8601 UTC | now | any |
+| `limit` | integer | `30` | 1-365 |
+| `offset` | integer | `0` | ≥ 0 |
+
+
+## Phase keys
+
+Apple's `HKCategoryValueSleepAnalysis` mapped verbatim:
+
+| Key | Meaning |
+| --- | --- |
+| `inBed` | Outer envelope (typically one entry = session length) |
+| `asleepCore` | Light sleep |
+| `asleepDeep` | Deep / slow-wave sleep |
+| `asleepREM` | REM |
+| `asleepUnspecified` | Pre-iOS-16 sleep samples + sources that don't differentiate phases |
+| `awake` | Awake periods within the in-bed window |
+
+Phase intervals encode as `{ t, dur }` parallel arrays, integer seconds offset from `session.startDate`. Empty phases are omitted entirely.
+
+## Durations
+
+| Field | Formula |
+| --- | --- |
+| `inBedDuration` | sum of `inBed` phase durations |
+| `asleepDuration` | sum of all `asleep*` durations (Core + Deep + REM + Unspecified) |
+| `awakeDuration` | sum of `awake` durations |
+
+Efficiency is `asleepDuration / inBedDuration` — computed client-side, not returned.
+
+## Reconciliation rules
+
+- **Session boundary**: samples are walked sorted by `startDate`. A new session starts when the gap from the current running `endDate` exceeds **2 hours**.
+- **Multi-source**: when samples for a single session come from multiple sources (rare), the session's `src` points at the most-frequent source. The top-level `sources` array collects all distinct sources across all sessions in the response.
+- **Pre-iOS-16 data**: deprecated `asleep` value maps to `asleepUnspecified`.
+
+## MCP tool
+
+`list_sleep_sessions({ "from": "2026-04-11T00:00:00Z", "to": "2026-05-11T00:00:00Z", "limit": 14 })`

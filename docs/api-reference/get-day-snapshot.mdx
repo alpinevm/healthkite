@@ -1,0 +1,64 @@
+---
+title: "GET /day-snapshot/{date}"
+description: "One-call overview of a single local-calendar day."
+openapi: "GET /day-snapshot/{date}"
+---
+
+`date` is `YYYY-MM-DD` in the **iPhone's local timezone**. The server brackets `[startOfDay, nextDayStart)` exactly the way the iOS UI does, so the numbers in the response match what's on screen.
+
+This is the highest-leverage endpoint for agents: one call → sleep, workouts, activity totals, heart, body, and mobility for a day.
+
+
+## Field-by-field
+
+### `sleep` (array)
+
+Zero or more sessions whose `endDate` falls within the local day. Most days have one session (the night ending this morning). Naps + nighttime sleep ending the same day appear as two entries. Same shape as `/sleep` sessions.
+
+### `workouts` (array)
+
+`WorkoutSummary` objects whose `startDate` falls within the local day, sorted by `startDate` descending. Same shape as `/workouts` summaries — for full detail, follow up with [`/workouts/{uuid}`](/api-reference/get-workout).
+
+### `activity` (object or null)
+
+Daily totals computed via `HKStatisticsQuery` `.cumulativeSum`. Numbers match the Apple Health app exactly. `null` if all six fields are nil.
+
+| Field | Unit |
+| --- | --- |
+| `steps` | count |
+| `distanceMeters` | meters |
+| `activeEnergyKcal` | kcal |
+| `exerciseMinutes` | minutes |
+| `standHours` | hours |
+| `flightsClimbed` | floors |
+
+### `heart` (object or null)
+
+| Field | Source |
+| --- | --- |
+| `restingBPM` | Latest `RestingHeartRate` sample with `endDate` in the day |
+| `averageBPM` | `HKStatisticsQuery` `.discreteAverage` over `HeartRate` samples in the day |
+| `hrvSDNN` | Latest `HeartRateVariabilitySDNN` reading within an 18-hour window of the day start |
+| `vo2max` | Latest `VO2Max` reading on or before `endOfDay` |
+
+Individual fields are `null` when no data exists; the whole object is `null` when all four are nil.
+
+### `body` (object or null)
+
+Latest body measurement on or before `endOfDay`. `mostRecentSampleDate` indicates how fresh the data is — values may be days or weeks old depending on logging cadence.
+
+### `mobility` (object or null)
+
+`HKStatisticsQuery` `.discreteAverage` over the day's walking samples.
+
+## Future dates
+
+`get_day_snapshot({ "date": "2099-01-01" })` returns `200` with `sleep: []`, `workouts: []`, and `activity`/`heart`/`body`/`mobility: null`. No error.
+
+## Errors
+
+- `400 bad_date` — date parameter doesn't parse as `YYYY-MM-DD`.
+
+## MCP tool
+
+`get_day_snapshot({ "date": "2026-05-10" })`
