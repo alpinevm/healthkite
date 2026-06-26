@@ -3,6 +3,7 @@
   "theme": "mint",
   "name": "HealthKite",
   "colors": { "primary": "#41868b", "light": "#75b9be", "dark": "#316468" },
+  "background": { "color": { "light": "#faf8f3", "dark": "#150f12" } },
   "logo": { "light": "/logo.svg", "dark": "/logo.svg" },
   "favicon": "/favicon.svg",
   "appearance": { "default": "light" },
