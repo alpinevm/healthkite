@@ -1,4 +1,4 @@
-use crate::crypto::WirebodyKeys;
+use crate::crypto::HealthKiteKeys;
 use crate::http::Endpoint;
 use mdns_sd::{ServiceDaemon, ServiceEvent};
 use std::time::{Duration, Instant};
@@ -9,20 +9,20 @@ pub enum DiscoveryError {
     #[error("mDNS discovery failed: {0}")]
     Mdns(String),
     #[error(
-        "Cannot discover Wirebody instance {instance} on {service_type} within {timeout_ms}ms"
+        "Cannot discover HealthKite MCP instance {instance} on {service_type} within {timeout_ms}ms"
     )]
     Timeout {
         instance: String,
         service_type: String,
         timeout_ms: u128,
     },
-    #[error("discovered Wirebody service has no IPv4 address")]
+    #[error("discovered HealthKite MCP service has no IPv4 address")]
     MissingAddress,
 }
 
-pub fn discover_wirebody_endpoint(
+pub fn discover_healthkite_endpoint(
     service_type: &str,
-    keys: &WirebodyKeys,
+    keys: &HealthKiteKeys,
     timeout: Duration,
 ) -> Result<Endpoint, DiscoveryError> {
     let mdns = ServiceDaemon::new().map_err(|error| DiscoveryError::Mdns(error.to_string()))?;
@@ -77,14 +77,14 @@ mod tests {
     #[test]
     fn matches_dns_sd_fullname_case_insensitively() {
         assert!(fullname_matches(
-            "abcd._wirebody._tcp.local.",
+            "abcd._healthkite-mcp._tcp.local.",
             "ABCD",
-            "_wirebody._tcp.local."
+            "_healthkite-mcp._tcp.local."
         ));
         assert!(!fullname_matches(
-            "other._wirebody._tcp.local.",
+            "other._healthkite-mcp._tcp.local.",
             "abcd",
-            "_wirebody._tcp.local."
+            "_healthkite-mcp._tcp.local."
         ));
     }
 }

@@ -1,6 +1,6 @@
-# Wirebody docs
+# HealthKite MCP docs
 
-[Astro Starlight](https://starlight.astro.build/) site. Live at https://alpinevm.github.io/wirebody/.
+[Astro Starlight](https://starlight.astro.build/) site. Live at https://docs.healthkite.app/.
 
 ## Local dev
 
@@ -18,4 +18,4 @@ Dev server at http://localhost:4321.
 npm run build
 ```
 
-Output: `dist/`. Deployed via the GitHub Actions workflow at `../.github/workflows/docs.yml`.
+Output: `dist/`. Deployed on Railway from this `docs/` directory.

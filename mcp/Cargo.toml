@@ -1,12 +1,12 @@
 [package]
-name = "wirebody-mcp"
+name = "healthkite-mcp"
 version = "0.6.0"
 edition = "2021"
 license = "MIT"
-description = "Rust MCP server for Wirebody LAN discovery and TLS-PSK transport"
+description = "Rust MCP server for HealthKite MCP LAN discovery and TLS-PSK transport"
 
 [[bin]]
-name = "wirebody-mcp"
+name = "healthkite-mcp"
 path = "src/main.rs"
 
 [dependencies]

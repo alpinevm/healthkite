@@ -3,14 +3,14 @@ title: API overview
 description: "Read-only HTTP/1.1 inside authenticated LAN TLS-PSK."
 ---
 
-The Wirebody LAN server exposes read-only HTTP/1.1 JSON endpoints inside an authenticated TLS-PSK connection. MCP clients normally access these endpoints through `wirebody-mcp`, which discovers the iPhone with Bonjour/mDNS and opens the TLS-PSK channel.
+The HealthKite MCP LAN server exposes read-only HTTP/1.1 JSON endpoints inside an authenticated TLS-PSK connection. MCP clients normally access these endpoints through `healthkite-mcp`, which discovers the iPhone with Bonjour/mDNS and opens the TLS-PSK channel.
 
 ## Addressing
 
-Users do not copy an IP address. Wirebody advertises a DNS-SD service:
+Users do not copy an IP address. HealthKite MCP advertises a DNS-SD service:
 
 ```text
-<derived-instance>._wirebody._tcp.local.
+<derived-instance>._healthkite-mcp._tcp.local.
 ```
 
 The instance label is derived from the Pairing Secret, and the SRV record carries the current host/port. Default port is `8080`, configurable in Settings.

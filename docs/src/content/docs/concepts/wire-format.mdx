@@ -3,7 +3,7 @@ title: Wire format
 description: "HealthKit-native field names, native units, no schema invention."
 ---
 
-The cardinal design rule: **every field name in Wirebody's JSON is Apple's own**. Field-naming choices that were already made by Apple in the HealthKit framework are kept; we don't invent.
+The cardinal design rule: **every field name in HealthKite MCP's JSON is Apple's own**. Field-naming choices that were already made by Apple in the HealthKit framework are kept; we don't invent.
 
 ## What that means in practice
 
@@ -18,8 +18,8 @@ The cardinal design rule: **every field name in Wirebody's JSON is Apple's own**
 
 Five reasons, in priority order:
 
-1. **Self-documenting.** A consumer who doesn't know Wirebody can still parse the JSON by looking up `HKQuantityTypeIdentifierRunningPower` in Apple's HealthKit documentation. Zero app-specific docs required.
-2. **Future-proof.** When Apple ships a new workout activity type or quantity identifier next year, it just appears in the output with its canonical name. No Wirebody release needed to "support" it.
+1. **Self-documenting.** A consumer who doesn't know HealthKite MCP can still parse the JSON by looking up `HKQuantityTypeIdentifierRunningPower` in Apple's HealthKit documentation. Zero app-specific docs required.
+2. **Future-proof.** When Apple ships a new workout activity type or quantity identifier next year, it just appears in the output with its canonical name. No HealthKite MCP release needed to "support" it.
 3. **Legally clean.** Field names are descriptions of Apple's API surface, not borrowed from any competing product's schema.
 4. **Lossless.** Without unit conversion, no rounding error. Without aggregation, every sample is preserved. Receivers do their own conversion or rollup if they want.
 5. **Architecturally honest.** The JSON is what HealthKit returned, with provenance hoisted to deduplicate. Nothing more, nothing less.
@@ -71,15 +71,15 @@ Five reasons, in priority order:
 }
 ```
 
-Three structural features are Wirebody-specific and worth understanding:
+Three structural features are HealthKite MCP-specific and worth understanding:
 
 - **`sampleEncoding: "columnar-v1"`** — see [Columnar encoding](./columnar-encoding).
 - **`sources` array with `src` indices** — see [Provenance hoisting](./provenance-hoisting).
 - **`workoutActivityType` as the full Apple enum string** — see above. We don't shorten to `"running"`.
 
-These three are the only places Wirebody adds structure beyond what HealthKit literally returns. Everything else is a faithful encoding of the Swift objects.
+These three are the only places HealthKite MCP adds structure beyond what HealthKit literally returns. Everything else is a faithful encoding of the Swift objects.
 
-## What Wirebody does NOT do
+## What HealthKite MCP does NOT do
 
 - We do not bucket heart rate into Min/Avg/Max per minute. The full per-sample series is preserved.
 - We do not convert distance, weight, or temperature to user-preferred units. The iOS UI converts for display; the wire data stays in HealthKit-native units.
@@ -90,7 +90,7 @@ These three are the only places Wirebody adds structure beyond what HealthKit li
 
 [Health Auto Export](https://github.com/Lybron/health-auto-export) (HAE) is the paid commercial product in the same space. Different design choices:
 
-| | HAE | Wirebody |
+| | HAE | HealthKite MCP |
 |---|---|---|
 | Field names | invented (`heartRateData`, `activeEnergy`, `walkingAndRunningDistance`) | Apple's (`HKQuantityTypeIdentifierHeartRate`, etc.) |
 | Heart rate series | bucketed Min/Avg/Max | every raw sample |
@@ -100,4 +100,4 @@ These three are the only places Wirebody adds structure beyond what HealthKit li
 | License | closed | open MCP (MIT) |
 | Cost | freemium | free |
 
-Neither approach is wrong. HAE's shape is what users already have dashboards wired up against; Wirebody's shape is what an LLM agent can pull, parse, and reason about efficiently.
+Neither approach is wrong. HAE's shape is what users already have dashboards wired up against; HealthKite MCP's shape is what an LLM agent can pull, parse, and reason about efficiently.

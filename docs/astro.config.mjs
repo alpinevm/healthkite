@@ -4,13 +4,13 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "Wirebody",
+      title: "HealthKite MCP",
       description: "Apple HealthKit, exposed honestly as JSON. Free, open-source, agent-native.",
       social: [
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/alpinevm/wirebody",
+          href: "https://github.com/alpinevm/healthkite",
         },
       ],
       sidebar: [

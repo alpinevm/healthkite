@@ -1,11 +1,11 @@
-# wirebody-mcp
+# healthkite-mcp
 
-Rust MCP server exposing the **Wirebody** iOS app's Local LAN Server to MCP clients.
+Rust MCP server exposing the **HealthKite MCP** iOS app's Local LAN Server to MCP clients.
 
 The server uses the serverless LAN discovery + authenticated channel design:
 
-- derive discovery/auth material from one shared root secret (`WIREBODY_TOKEN` or `WIREBODY_ROOT`),
-- discover the iOS app with DNS-SD/mDNS using `_wirebody._tcp.local.`,
+- derive discovery/auth material from one shared root secret (`HEALTHKITE_TOKEN` or `HEALTHKITE_ROOT`),
+- discover the iOS app with DNS-SD/mDNS using `_healthkite-mcp._tcp.local.`,
 - connect only over TLS-PSK,
 - never send the shared secret as an HTTP bearer token.
 
@@ -14,13 +14,13 @@ The server uses the serverless LAN discovery + authenticated channel design:
 Install from GitHub with Cargo:
 
 ```bash
-cargo install --git https://github.com/alpinevm/wirebody wirebody-mcp
+cargo install --git https://github.com/alpinevm/healthkite healthkite-mcp
 ```
 
 Upgrade/reinstall:
 
 ```bash
-cargo install --git https://github.com/alpinevm/wirebody wirebody-mcp --force
+cargo install --git https://github.com/alpinevm/healthkite healthkite-mcp --force
 ```
 
 Install from a local checkout:
@@ -43,10 +43,10 @@ Prerequisites:
 Confirm the installed binary:
 
 ```bash
-wirebody-mcp
+healthkite-mcp
 ```
 
-With no `WIREBODY_TOKEN`, the binary exits with a configuration error. That is expected; MCP clients provide the environment variable in their config.
+With no `HEALTHKITE_TOKEN`, the binary exits with a configuration error. That is expected; MCP clients provide the environment variable in their config.
 
 ## Configure
 
@@ -55,34 +55,34 @@ Add the server to your MCP client config:
 ```json
 {
   "mcpServers": {
-    "wirebody": {
-      "command": "wirebody-mcp",
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
       "env": {
-        "WIREBODY_TOKEN": "<pairing secret from Wirebody Settings>"
+        "HEALTHKITE_TOKEN": "<pairing secret from HealthKite MCP Settings>"
       }
     }
   }
 }
 ```
 
-If the MCP client cannot find `wirebody-mcp`, either add Cargo's bin directory to `PATH` or use the absolute path shown by:
+If the MCP client cannot find `healthkite-mcp`, either add Cargo's bin directory to `PATH` or use the absolute path shown by:
 
 ```bash
-which wirebody-mcp
+which healthkite-mcp
 ```
 
 Environment:
 
-- `WIREBODY_TOKEN` / `WIREBODY_ROOT` — shared root secret used for HKDF derivation.
-- `WIREBODY_SERVICE_TYPE` — optional DNS-SD service type override; default `_wirebody._tcp.local.`.
-- `WIREBODY_DISCOVERY_TIMEOUT_MS` — optional mDNS browse timeout; default `3000`.
+- `HEALTHKITE_TOKEN` / `HEALTHKITE_ROOT` — shared root secret used for HKDF derivation.
+- `HEALTHKITE_SERVICE_TYPE` — optional DNS-SD service type override; default `_healthkite-mcp._tcp.local.`.
+- `HEALTHKITE_DISCOVERY_TIMEOUT_MS` — optional mDNS browse timeout; default `3000`.
 
-`WIREBODY_URL` is intentionally unsupported; the MCP server always discovers the iOS app by Bonjour/mDNS and authenticates the TCP session with TLS-PSK.
+`HEALTHKITE_URL` is intentionally unsupported; the MCP server always discovers the iOS app by Bonjour/mDNS and authenticates the TCP session with TLS-PSK.
 
 Derived values:
 
-- `discovery_id = HKDF-SHA256(root, info = "wirebody:discovery:v1")`, first 16 bytes.
-- `psk = HKDF-SHA256(root, info = "wirebody:auth:v1")`, 32 bytes.
+- `discovery_id = HKDF-SHA256(root, info = "healthkite-mcp:discovery:v1")`, first 16 bytes.
+- `psk = HKDF-SHA256(root, info = "healthkite-mcp:auth:v1")`, 32 bytes.
 - DNS-SD instance label = lowercase base32-no-padding of `discovery_id`.
 - PSK identity = the same instance label bytes.
 
@@ -92,7 +92,7 @@ Derived values:
 | --- | --- | --- |
 | `status` | none | `{ name, version, workoutCount, sampleEncoding }` |
 | `list_workouts` | `limit?` (1–200, default 50), `offset?` (default 0) | `{ workouts: WorkoutSummary[], limit, offset, total, hasMore }` |
-| `get_workout` | `uuid` (string, required) | Full `WorkoutDetail` JSON in Wirebody `columnar-v1` shape |
+| `get_workout` | `uuid` (string, required) | Full `WorkoutDetail` JSON in HealthKite MCP `columnar-v1` shape |
 | `list_quantity_types` | none | `{ types: QuantityTypeInfo[] }` |
 | `get_quantity_series` | `type` (string, required), `from?`, `to?`, `limit?` (1–50000, default 5000), `offset?` (default 0) | Standalone quantity series JSON in `columnar-v1` shape |
 | `list_sleep_sessions` | `from?`, `to?`, `limit?` (1–365, default 30), `offset?` (default 0) | Reconciled sleep-session page with phase interval columns |
@@ -108,7 +108,7 @@ cargo build
 
 ## Errors
 
-Wirebody downstream errors are surfaced as MCP JSON-RPC errors with `error.code = -32600` and `error.data.code` set to one of:
+HealthKite MCP downstream errors are surfaced as MCP JSON-RPC errors with `error.code = -32600` and `error.data.code` set to one of:
 
 - `Unauthorized`
 - `NotFound`

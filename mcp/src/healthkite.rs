@@ -4,22 +4,22 @@ use std::sync::Arc;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum WirebodyError {
-    #[error("WIREBODY_TOKEN is missing or wrong")]
+pub enum HealthKiteError {
+    #[error("HEALTHKITE_TOKEN is missing or wrong")]
     Unauthorized,
     #[error("{0} was not found")]
     NotFound(String),
     #[error("Invalid day snapshot date: {0}. Expected YYYY-MM-DD.")]
     BadDate(String),
     #[error(
-        "Cannot reach Wirebody at {0}. Is the iOS app foregrounded and the LAN server enabled?"
+        "Cannot reach HealthKite MCP at {0}. Is the iOS app foregrounded and the LAN server enabled?"
     )]
     Unreachable(String),
     #[error("{message}")]
     ServerError { message: String, status: u16 },
 }
 
-impl WirebodyError {
+impl HealthKiteError {
     pub fn code(&self) -> &'static str {
         match self {
             Self::Unauthorized => "Unauthorized",
@@ -32,12 +32,12 @@ impl WirebodyError {
 }
 
 #[derive(Clone)]
-pub struct WirebodyClient {
+pub struct HealthKiteClient {
     base_url: String,
     transport: Arc<dyn HttpTransport>,
 }
 
-impl WirebodyClient {
+impl HealthKiteClient {
     pub fn new(base_url: impl Into<String>, transport: Arc<dyn HttpTransport>) -> Self {
         Self {
             base_url: base_url.into(),
@@ -45,25 +45,25 @@ impl WirebodyClient {
         }
     }
 
-    pub fn status(&self) -> Result<String, WirebodyError> {
+    pub fn status(&self) -> Result<String, HealthKiteError> {
         self.request_text("/", "status")
     }
 
-    pub fn list_workouts(&self, limit: i64, offset: i64) -> Result<String, WirebodyError> {
+    pub fn list_workouts(&self, limit: i64, offset: i64) -> Result<String, HealthKiteError> {
         self.request_text(
             &format!("/workouts?limit={limit}&offset={offset}"),
             "workouts list",
         )
     }
 
-    pub fn get_workout(&self, uuid: &str) -> Result<String, WirebodyError> {
+    pub fn get_workout(&self, uuid: &str) -> Result<String, HealthKiteError> {
         self.request_text(
             &format!("/workouts/{}", urlencoding::encode(uuid)),
             &format!("workout {uuid}"),
         )
     }
 
-    pub fn list_quantity_types(&self) -> Result<String, WirebodyError> {
+    pub fn list_quantity_types(&self) -> Result<String, HealthKiteError> {
         self.request_text("/quantity-types", "quantity types")
     }
 
@@ -74,7 +74,7 @@ impl WirebodyClient {
         to: Option<&str>,
         limit: i64,
         offset: i64,
-    ) -> Result<String, WirebodyError> {
+    ) -> Result<String, HealthKiteError> {
         let mut query = QueryBuilder::new();
         query.add_optional("from", from);
         query.add_optional("to", to);
@@ -96,7 +96,7 @@ impl WirebodyClient {
         to: Option<&str>,
         limit: i64,
         offset: i64,
-    ) -> Result<String, WirebodyError> {
+    ) -> Result<String, HealthKiteError> {
         let mut query = QueryBuilder::new();
         query.add_optional("from", from);
         query.add_optional("to", to);
@@ -105,9 +105,9 @@ impl WirebodyClient {
         self.request_text(&format!("/sleep{}", query.finish()), "sleep sessions")
     }
 
-    pub fn get_day_snapshot(&self, date: &str) -> Result<String, WirebodyError> {
+    pub fn get_day_snapshot(&self, date: &str) -> Result<String, HealthKiteError> {
         if !is_day_snapshot_date(date) {
-            return Err(WirebodyError::BadDate(date.to_string()));
+            return Err(HealthKiteError::BadDate(date.to_string()));
         }
         self.request_text(
             &format!("/day-snapshot/{}", urlencoding::encode(date)),
@@ -115,15 +115,15 @@ impl WirebodyClient {
         )
     }
 
-    fn request_text(&self, path: &str, context: &str) -> Result<String, WirebodyError> {
+    fn request_text(&self, path: &str, context: &str) -> Result<String, HealthKiteError> {
         let response = self.transport.get(path).map_err(|error| match error {
             HttpError::Connect(message)
             | HttpError::TlsHandshake(message)
             | HttpError::Read(message)
             | HttpError::Write(message) => {
-                WirebodyError::Unreachable(format!("{} ({message})", self.base_url))
+                HealthKiteError::Unreachable(format!("{} ({message})", self.base_url))
             }
-            other => WirebodyError::ServerError {
+            other => HealthKiteError::ServerError {
                 message: other.to_string(),
                 status: 0,
             },
@@ -134,12 +134,12 @@ impl WirebodyClient {
         }
 
         match response.status {
-            401 => Err(WirebodyError::Unauthorized),
-            404 => Err(WirebodyError::NotFound(context.to_string())),
+            401 => Err(HealthKiteError::Unauthorized),
+            404 => Err(HealthKiteError::NotFound(context.to_string())),
             400 if response.body.contains("bad_date") => {
-                Err(WirebodyError::BadDate(context.to_string()))
+                Err(HealthKiteError::BadDate(context.to_string()))
             }
-            status => Err(WirebodyError::ServerError {
+            status => Err(HealthKiteError::ServerError {
                 message: if response.body.is_empty() {
                     response.reason
                 } else {
@@ -259,8 +259,8 @@ mod tests {
 
     #[test]
     fn maps_status_errors() {
-        let client = WirebodyClient::new(
-            "https://wirebody.local:5606",
+        let client = HealthKiteClient::new(
+            "https://healthkite.local:5606",
             Arc::new(ConstantTransport {
                 response: HttpResponse {
                     status: 401,

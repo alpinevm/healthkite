@@ -5,7 +5,7 @@ description: "device + sourceRevision live once in a top-level sources array; sa
 
 Every HealthKit sample carries `device` and `sourceRevision` properties. At the Swift / in-memory layer those are references — one `HKDevice` instance for "My Apple Watch" can be shared by 5,000 samples. At the JSON layer there's no concept of references, so a naive encoding inlines those structs per sample.
 
-Wirebody hoists provenance into a top-level `sources` array and replaces inline provenance with integer `src` indices.
+HealthKite MCP hoists provenance into a top-level `sources` array and replaces inline provenance with integer `src` indices.
 
 ## Shape
 

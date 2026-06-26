@@ -1,5 +1,5 @@
-use crate::wirebody::{
-    integer_arg, optional_string_arg, string_arg, WirebodyClient, WirebodyError,
+use crate::healthkite::{
+    integer_arg, optional_string_arg, string_arg, HealthKiteClient, HealthKiteError,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -55,10 +55,10 @@ enum ToolCallError {
         data: Option<Value>,
     },
     #[error(transparent)]
-    Wirebody(#[from] WirebodyError),
+    HealthKite(#[from] HealthKiteError),
 }
 
-pub fn run_stdio(client: WirebodyClient) -> Result<(), McpRuntimeError> {
+pub fn run_stdio(client: HealthKiteClient) -> Result<(), McpRuntimeError> {
     let stdin = io::stdin();
     let mut stdout = io::stdout().lock();
     for line in stdin.lock().lines() {
@@ -83,7 +83,7 @@ pub fn run_stdio(client: WirebodyClient) -> Result<(), McpRuntimeError> {
     Ok(())
 }
 
-fn handle_line(client: &WirebodyClient, line: &str) -> Option<JsonRpcResponse<'static>> {
+fn handle_line(client: &HealthKiteClient, line: &str) -> Option<JsonRpcResponse<'static>> {
     let message = match serde_json::from_str::<JsonRpcMessage>(line) {
         Ok(message) => message,
         Err(error) => {
@@ -119,7 +119,7 @@ fn handle_line(client: &WirebodyClient, line: &str) -> Option<JsonRpcResponse<'s
 }
 
 fn handle_request(
-    client: &WirebodyClient,
+    client: &HealthKiteClient,
     method: &str,
     params: Option<&Value>,
 ) -> Result<Value, ToolCallError> {
@@ -145,14 +145,14 @@ fn initialize_result(params: Option<&Value>) -> Value {
         "protocolVersion": protocol_version,
         "capabilities": { "tools": {} },
         "serverInfo": {
-            "name": "wirebody-mcp",
+            "name": "healthkite-mcp",
             "version": env!("CARGO_PKG_VERSION")
         }
     })
 }
 
 fn call_tool_request(
-    client: &WirebodyClient,
+    client: &HealthKiteClient,
     params: Option<&Value>,
 ) -> Result<Value, ToolCallError> {
     let params = params
@@ -176,7 +176,7 @@ fn call_tool_request(
 }
 
 fn call_tool(
-    client: &WirebodyClient,
+    client: &HealthKiteClient,
     name: &str,
     args: Option<&serde_json::Map<String, Value>>,
 ) -> Result<String, ToolCallError> {
@@ -284,7 +284,7 @@ fn tool_error_response(id: Value, error: ToolCallError) -> JsonRpcResponse<'stat
             message,
             data,
         } => error_response(id, code, message, data),
-        ToolCallError::Wirebody(error) => error_response(
+        ToolCallError::HealthKite(error) => error_response(
             id,
             INVALID_REQUEST,
             error.to_string(),
@@ -297,12 +297,12 @@ pub fn tools() -> Value {
     json!([
         {
             "name": "status",
-            "description": "Get a quick status snapshot of the Wirebody iOS app's LAN server: name, version, workout count, and sample-encoding format.",
+            "description": "Get a quick status snapshot of the HealthKite MCP iOS app's LAN server: name, version, workout count, and sample-encoding format.",
             "inputSchema": { "type": "object", "properties": {}, "required": [] }
         },
         {
             "name": "list_workouts",
-            "description": "List workouts from the Wirebody iOS app, sorted by start date descending. Returns a paginated envelope with workout summaries and pagination metadata. Use this to discover workout UUIDs that can be passed to get_workout.",
+            "description": "List workouts from the HealthKite MCP iOS app, sorted by start date descending. Returns a paginated envelope with workout summaries and pagination metadata. Use this to discover workout UUIDs that can be passed to get_workout.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -314,7 +314,7 @@ pub fn tools() -> Value {
         },
         {
             "name": "get_workout",
-            "description": "Fetch the full columnar workout detail for a single workout by UUID. Returns the same JSON shape Wirebody emits via share/copy/push: sampleEncoding 'columnar-v1', hoisted device+sourceRevision in 'sources', per-stream parallel arrays (unit, t, v, dur?, src?). Typical size ~50-100 KB for a long workout.",
+            "description": "Fetch the full columnar workout detail for a single workout by UUID. Returns the same JSON shape HealthKite MCP emits via share/copy: sampleEncoding 'columnar-v1', hoisted device+sourceRevision in 'sources', per-stream parallel arrays (unit, t, v, dur?, src?). Typical size ~50-100 KB for a long workout.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -325,12 +325,12 @@ pub fn tools() -> Value {
         },
         {
             "name": "list_quantity_types",
-            "description": "List standalone HealthKit quantity types that Wirebody can export, including category, preferred unit, aggregation style, readable sample count, and first/last sample timestamps.",
+            "description": "List standalone HealthKit quantity types that HealthKite MCP can export, including category, preferred unit, aggregation style, readable sample count, and first/last sample timestamps.",
             "inputSchema": { "type": "object", "properties": {}, "required": [] }
         },
         {
             "name": "get_quantity_series",
-            "description": "Fetch a standalone HealthKit quantity series in Wirebody's columnar-v1 shape. Use list_quantity_types to discover identifiers. Supports optional ISO-8601 from/to range, limit, and offset.",
+            "description": "Fetch a standalone HealthKit quantity series in HealthKite MCP's columnar-v1 shape. Use list_quantity_types to discover identifiers. Supports optional ISO-8601 from/to range, limit, and offset.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -359,7 +359,7 @@ pub fn tools() -> Value {
         },
         {
             "name": "get_day_snapshot",
-            "description": "Fetch a single local-calendar day overview from Wirebody: sleep, workouts, activity totals, heart, body, and mobility. Returns the same numbers as the iOS Day view.",
+            "description": "Fetch a single local-calendar day overview from HealthKite MCP: sleep, workouts, activity totals, heart, body, and mobility. Returns the same numbers as the iOS Day view.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -402,8 +402,8 @@ mod tests {
     }
 
     #[test]
-    fn status_tool_returns_text_content_from_wirebody() {
-        let body = r#"{"name":"Wirebody","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":3}"#;
+    fn status_tool_returns_text_content_from_healthkite() {
+        let body = r#"{"name":"HealthKite MCP","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":3}"#;
         let client = client_with_response(body);
         let rpc = handle_line(
             &client,
@@ -414,7 +414,7 @@ mod tests {
         let value = serde_json::to_value(rpc).unwrap();
         assert_eq!(
             value["result"]["content"][0]["text"],
-            "{\"name\":\"Wirebody\",\"sampleEncoding\":\"columnar-v1\",\"version\":\"1.0\",\"workoutCount\":3}"
+            "{\"name\":\"HealthKite MCP\",\"sampleEncoding\":\"columnar-v1\",\"version\":\"1.0\",\"workoutCount\":3}"
         );
     }
 
@@ -435,8 +435,8 @@ mod tests {
     }
 
     #[test]
-    fn initialize_and_tools_list_do_not_touch_wirebody_backend() {
-        let client = WirebodyClient::new("unused backend", Arc::new(PanicTransport));
+    fn initialize_and_tools_list_do_not_touch_healthkite_backend() {
+        let client = HealthKiteClient::new("unused backend", Arc::new(PanicTransport));
 
         let initialize = handle_line(
             &client,
@@ -450,7 +450,7 @@ mod tests {
         .unwrap();
 
         assert!(serde_json::to_value(initialize).unwrap()["result"]["serverInfo"]["name"]
-            == "wirebody-mcp");
+            == "healthkite-mcp");
         assert!(serde_json::to_value(tools).unwrap()["result"]["tools"]
             .as_array()
             .is_some_and(|tools| !tools.is_empty()));
@@ -458,14 +458,14 @@ mod tests {
 
     #[test]
     fn backend_failure_returns_tool_error_and_later_request_still_works() {
-        let client = WirebodyClient::new(
-            "Bonjour service fixture._wirebody._tcp.local.",
+        let client = HealthKiteClient::new(
+            "Bonjour service fixture._healthkite-mcp._tcp.local.",
             Arc::new(FlakyTransport {
                 calls: AtomicUsize::new(0),
                 response: HttpResponse {
                     status: 200,
                     reason: "OK".to_string(),
-                    body: r#"{"name":"Wirebody","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":0}"#
+                    body: r#"{"name":"HealthKite MCP","sampleEncoding":"columnar-v1","version":"1.0","workoutCount":0}"#
                         .to_string(),
                 },
             }),
@@ -487,7 +487,7 @@ mod tests {
         let recovered = serde_json::to_value(recovered).unwrap();
         assert_eq!(
             recovered["result"]["content"][0]["text"],
-            "{\"name\":\"Wirebody\",\"sampleEncoding\":\"columnar-v1\",\"version\":\"1.0\",\"workoutCount\":0}"
+            "{\"name\":\"HealthKite MCP\",\"sampleEncoding\":\"columnar-v1\",\"version\":\"1.0\",\"workoutCount\":0}"
         );
     }
 
@@ -524,13 +524,13 @@ mod tests {
         }
     }
 
-    fn client_without_server() -> WirebodyClient {
+    fn client_without_server() -> HealthKiteClient {
         client_with_response("{}")
     }
 
-    fn client_with_response(body: &str) -> WirebodyClient {
-        WirebodyClient::new(
-            "https://wirebody.local:5606",
+    fn client_with_response(body: &str) -> HealthKiteClient {
+        HealthKiteClient::new(
+            "https://healthkite.local:5606",
             Arc::new(ConstantTransport {
                 response: HttpResponse {
                     status: 200,

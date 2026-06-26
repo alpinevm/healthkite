@@ -1,5 +1,5 @@
 ---
-title: Wirebody
+title: HealthKite MCP
 description: "Apple HealthKit, exposed honestly as JSON. Free, open-source, agent-native."
 sidebar:
   label: Introduction
@@ -7,7 +7,7 @@ sidebar:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-**Wirebody** is an iOS app that turns your iPhone into a small read-only, authenticated LAN endpoint for your own Apple Health data. Run it on your home Wi-Fi, point an AI agent at it, and get clean HealthKit-native JSON back without a cloud backend.
+**HealthKite MCP** is an iOS app that turns your iPhone into a small read-only, authenticated LAN endpoint for your own Apple Health data. Run it on your home Wi-Fi, point an AI agent at it, and get clean HealthKit-native JSON back without a cloud backend.
 
 It is **free**, the wire format is **HealthKit-native** (Apple's own identifier vocabulary, no invented schema), and the companion MCP server is **open-source under MIT** — paste the config into Claude Code, Codex, Cursor, or any MCP-aware tool and ask your agent direct questions about your workouts, sleep, and vitals.
 
@@ -32,7 +32,7 @@ It is **free**, the wire format is **HealthKit-native** (Apple's own identifier 
 
 Apple HealthKit has no Apple-hosted API. If you want your data off the phone — for analysis, an agent, a coach, a backup, a dashboard — you need an app to read HealthKit and emit it. Most apps in this space invent their own JSON schema and convert units to user preference, which is lossy and not portable.
 
-**Wirebody's design rules:**
+**HealthKite MCP's design rules:**
 
 - **HealthKit-native field names.** Every key in the JSON is Apple's own identifier (`HKQuantityTypeIdentifierHeartRate`, `HKWorkoutActivityTypeRunning`, `HKMetadataKeyHeartRateMotionContext`). Look them up in Apple's docs; no app-specific vocabulary.
 - **HealthKit-native units.** Quantities stay in the unit HealthKit handed us — meters, kilograms, count/min, kcal. No "lb vs kg" conversion at the wire layer. Display units are a separate concern for the iOS UI only.
@@ -45,18 +45,18 @@ Apple HealthKit has no Apple-hosted API. If you want your data off the phone —
 
 Three pieces:
 
-1. **Wirebody iOS app** — Swift / SwiftUI, native HealthKit integration. Hosts the LAN server while in the foreground. Closed-source (for now), but the wire format and MCP integration are fully documented and reproducible.
+1. **HealthKite MCP iOS app** — Swift / SwiftUI, native HealthKit integration. Hosts the LAN server while in the foreground. Closed-source (for now), but the wire format and MCP integration are fully documented and reproducible.
 2. **Authenticated LAN transport** — Bonjour/mDNS discovery plus a `NWListener` HTTP/1.1 endpoint protected by TLS-PSK. The pairing secret is never sent as a bearer token.
-3. **`wirebody-mcp`** — Rust MCP server, MIT-licensed, [public on GitHub](https://github.com/alpinevm/wirebody). Stdio transport, installed with Cargo on the same machine as your agent.
+3. **`healthkite-mcp`** — Rust MCP server, MIT-licensed, [public on GitHub](https://github.com/alpinevm/healthkite). Stdio transport, installed with Cargo on the same machine as your agent.
 
 ```
 [ Claude Code / Codex / Cursor / ... ]
               │  stdio (JSON-RPC)
               ▼
-   wirebody-mcp (Rust, MIT)
+   healthkite-mcp (Rust, MIT)
               │  Bonjour discovery + TLS-PSK
               ▼
-   Wirebody iOS app (LAN)
+   HealthKite MCP iOS app (LAN)
               │  HealthKit
               ▼
         Apple HealthKit

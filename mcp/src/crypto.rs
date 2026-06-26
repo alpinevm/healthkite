@@ -2,20 +2,20 @@ use data_encoding::BASE32_NOPAD;
 use hkdf::Hkdf;
 use sha2::Sha256;
 
-pub const SERVICE_TYPE: &str = "_wirebody._tcp.local.";
-const DISCOVERY_INFO: &[u8] = b"wirebody:discovery:v1";
-const AUTH_INFO: &[u8] = b"wirebody:auth:v1";
+pub const SERVICE_TYPE: &str = "_healthkite-mcp._tcp.local.";
+const DISCOVERY_INFO: &[u8] = b"healthkite-mcp:discovery:v1";
+const AUTH_INFO: &[u8] = b"healthkite-mcp:auth:v1";
 const DISCOVERY_ID_LEN: usize = 16;
 const PSK_LEN: usize = 32;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct WirebodyKeys {
+pub struct HealthKiteKeys {
     discovery_id: [u8; DISCOVERY_ID_LEN],
     psk: [u8; PSK_LEN],
     instance_label: String,
 }
 
-impl WirebodyKeys {
+impl HealthKiteKeys {
     pub fn derive(root: &[u8]) -> Result<Self, hkdf::InvalidLength> {
         let hk = Hkdf::<Sha256>::new(None, root);
 
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn derives_separated_discovery_and_auth_keys() {
-        let keys = WirebodyKeys::derive(b"0123456789abcdef").unwrap();
+        let keys = HealthKiteKeys::derive(b"0123456789abcdef").unwrap();
         assert_eq!(keys.discovery_id().len(), 16);
         assert_eq!(keys.psk().len(), 32);
         assert_ne!(&keys.psk()[..16], keys.discovery_id());
@@ -69,8 +69,8 @@ mod tests {
 
     #[test]
     fn derivation_is_stable() {
-        let first = WirebodyKeys::derive(b"root-token").unwrap();
-        let second = WirebodyKeys::derive(b"root-token").unwrap();
+        let first = HealthKiteKeys::derive(b"root-token").unwrap();
+        let second = HealthKiteKeys::derive(b"root-token").unwrap();
         assert_eq!(first, second);
     }
 }

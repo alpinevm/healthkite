@@ -1,7 +1,7 @@
 use std::process;
-use wirebody_mcp::backend;
-use wirebody_mcp::config::Config;
-use wirebody_mcp::mcp;
+use healthkite_mcp::backend;
+use healthkite_mcp::config::Config;
+use healthkite_mcp::mcp;
 
 fn main() {
     if let Err(error) = run() {

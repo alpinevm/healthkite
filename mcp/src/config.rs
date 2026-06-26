@@ -1,4 +1,4 @@
-use crate::crypto::{WirebodyKeys, SERVICE_TYPE};
+use crate::crypto::{HealthKiteKeys, SERVICE_TYPE};
 use std::env;
 use std::time::Duration;
 use thiserror::Error;
@@ -9,17 +9,17 @@ const DEFAULT_DISCOVERY_TIMEOUT_MS: u64 = 3_000;
 pub struct Config {
     pub service_type: String,
     pub discovery_timeout: Duration,
-    pub keys: WirebodyKeys,
+    pub keys: HealthKiteKeys,
 }
 
 #[derive(Debug, Error)]
 pub enum ConfigError {
     #[error(
-        "WIREBODY_TOKEN or WIREBODY_ROOT is required for mDNS discovery and TLS-PSK authentication"
+        "HEALTHKITE_TOKEN or HEALTHKITE_ROOT is required for mDNS discovery and TLS-PSK authentication"
     )]
     MissingRootSecret,
     #[error(
-        "WIREBODY_URL is no longer supported; Wirebody MCP now requires mDNS discovery and TLS-PSK"
+        "HEALTHKITE_URL is no longer supported; HealthKite MCP now requires mDNS discovery and TLS-PSK"
     )]
     ManualUrlUnsupported,
     #[error("{0}")]
@@ -43,29 +43,29 @@ impl Config {
             .collect();
 
         if env
-            .get("WIREBODY_URL")
+            .get("HEALTHKITE_URL")
             .is_some_and(|value| !value.trim().is_empty())
         {
             return Err(ConfigError::ManualUrlUnsupported);
         }
 
         let root = env
-            .get("WIREBODY_ROOT")
-            .or_else(|| env.get("WIREBODY_TOKEN"))
+            .get("HEALTHKITE_ROOT")
+            .or_else(|| env.get("HEALTHKITE_TOKEN"))
             .filter(|value| !value.trim().is_empty())
             .ok_or(ConfigError::MissingRootSecret)?;
 
-        let keys = WirebodyKeys::derive(root.as_bytes())
-            .map_err(|_| ConfigError::InvalidValue("failed to derive Wirebody keys".to_string()))?;
+        let keys = HealthKiteKeys::derive(root.as_bytes())
+            .map_err(|_| ConfigError::InvalidValue("failed to derive HealthKite MCP keys".to_string()))?;
 
         let service_type = env
-            .get("WIREBODY_SERVICE_TYPE")
+            .get("HEALTHKITE_SERVICE_TYPE")
             .filter(|value| !value.trim().is_empty())
             .cloned()
             .unwrap_or_else(|| SERVICE_TYPE.to_string());
 
         let discovery_timeout = env
-            .get("WIREBODY_DISCOVERY_TIMEOUT_MS")
+            .get("HEALTHKITE_DISCOVERY_TIMEOUT_MS")
             .filter(|value| !value.trim().is_empty())
             .map(|value| {
                 value
@@ -73,7 +73,7 @@ impl Config {
                     .map(Duration::from_millis)
                     .map_err(|_| {
                         ConfigError::InvalidValue(
-                            "WIREBODY_DISCOVERY_TIMEOUT_MS must be an integer".to_string(),
+                            "HEALTHKITE_DISCOVERY_TIMEOUT_MS must be an integer".to_string(),
                         )
                     })
             })
@@ -101,16 +101,16 @@ mod tests {
     #[test]
     fn rejects_manual_url() {
         let error = Config::from_env_map([
-            ("WIREBODY_URL", "http://phone.local:5606"),
-            ("WIREBODY_TOKEN", "0123456789abcdef"),
+            ("HEALTHKITE_URL", "http://phone.local:5606"),
+            ("HEALTHKITE_TOKEN", "0123456789abcdef"),
         ])
         .unwrap_err();
         assert!(matches!(error, ConfigError::ManualUrlUnsupported));
     }
 
     #[test]
-    fn derives_keys_from_wirebody_token() {
-        let cfg = Config::from_env_map([("WIREBODY_TOKEN", "0123456789abcdef")]).unwrap();
+    fn derives_keys_from_healthkite_token() {
+        let cfg = Config::from_env_map([("HEALTHKITE_TOKEN", "0123456789abcdef")]).unwrap();
         assert_eq!(cfg.keys.psk().len(), 32);
     }
 }

@@ -5,12 +5,12 @@ description: "From zero to your agent answering health questions in under 3 minu
 
 import { Aside, Steps, Tabs, TabItem } from "@astrojs/starlight/components";
 
-You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Rust/Cargo for installing the MCP server.
+You'll need an iPhone with the **HealthKite MCP** app installed, a Mac/Linux machine on the same Wi-Fi running an MCP-aware agent (Claude Code, Codex, Cursor, etc.), and Rust/Cargo for installing the MCP server.
 
 ## 1 — Turn on the LAN server
 
 <Steps>
-1. **Open Wirebody**
+1. **Open HealthKite MCP**
 
    Switch to the **Settings** tab.
 
@@ -29,7 +29,7 @@ You'll need an iPhone with the **Wirebody** app installed, a Mac/Linux machine o
 </Steps>
 
 <Aside type="note">
-The LAN server only runs while the Wirebody app is foregrounded on the iPhone. iOS suspends background apps, so the server stops the moment you switch apps or lock the phone. This is a platform constraint, not a bug.
+The LAN server only runs while the HealthKite MCP app is foregrounded on the iPhone. iOS suspends background apps, so the server stops the moment you switch apps or lock the phone. This is a platform constraint, not a bug.
 </Aside>
 
 ## 2 — Install the MCP server
@@ -37,7 +37,7 @@ The LAN server only runs while the Wirebody app is foregrounded on the iPhone. i
 The MCP server is a Rust stdio program. It discovers the iPhone over Bonjour and connects over TLS-PSK; there is no URL to paste and no bearer token sent over the network.
 
 ```bash
-cargo install --git https://github.com/alpinevm/wirebody wirebody-mcp
+cargo install --git https://github.com/alpinevm/healthkite healthkite-mcp
 ```
 
 From a local checkout of the public repo:
@@ -56,10 +56,10 @@ If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first
 ```json
 {
   "mcpServers": {
-    "wirebody": {
-      "command": "wirebody-mcp",
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
       "env": {
-        "WIREBODY_TOKEN": "<paste-pairing-secret>"
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -72,10 +72,10 @@ If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first
 ```json
 {
   "mcpServers": {
-    "wirebody": {
-      "command": "wirebody-mcp",
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
       "env": {
-        "WIREBODY_TOKEN": "<paste-pairing-secret>"
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -88,10 +88,10 @@ If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first
 ```json
 {
   "mcpServers": {
-    "wirebody": {
-      "command": "wirebody-mcp",
+    "healthkite-mcp": {
+      "command": "healthkite-mcp",
       "env": {
-        "WIREBODY_TOKEN": "<paste-pairing-secret>"
+        "HEALTHKITE_TOKEN": "<paste-pairing-secret>"
       }
     }
   }
@@ -103,7 +103,7 @@ If Cargo cannot build `openssl-sys`, install OpenSSL development libraries first
 
 Restart the agent. The tools `status`, `list_workouts`, `get_workout`, `list_quantity_types`, `get_quantity_series`, `list_sleep_sessions`, and `get_day_snapshot` should appear in its tool list.
 
-If the tools return an unreachable/discovery error, keep Wirebody open in the foreground and confirm the iPhone and agent machine are on the same Wi-Fi network without guest/client isolation.
+If the tools return an unreachable/discovery error, keep HealthKite MCP open in the foreground and confirm the iPhone and agent machine are on the same Wi-Fi network without guest/client isolation.
 
 ## 4 — Ask your first question
 

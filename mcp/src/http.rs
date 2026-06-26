@@ -67,13 +67,13 @@ pub struct HttpResponse {
 
 #[derive(Debug, Error)]
 pub enum EndpointParseError {
-    #[error("Wirebody endpoints must use https:// because authentication is TLS-PSK only")]
+    #[error("HealthKite MCP endpoints must use https:// because authentication is TLS-PSK only")]
     InvalidScheme,
 }
 
 #[derive(Debug, Error)]
 pub enum HttpError {
-    #[error("cannot connect to Wirebody at {0}")]
+    #[error("cannot connect to HealthKite MCP at {0}")]
     Connect(String),
     #[error("TLS-PSK setup failed: {0}")]
     TlsSetup(String),
@@ -83,7 +83,7 @@ pub enum HttpError {
     Write(String),
     #[error("HTTP read failed: {0}")]
     Read(String),
-    #[error("invalid HTTP response from Wirebody")]
+    #[error("invalid HTTP response from HealthKite MCP")]
     InvalidResponse,
 }
 
@@ -206,7 +206,7 @@ impl HttpTransport for RawHttpTransport {
 fn request_bytes(endpoint: &Endpoint, path_and_query: &str) -> Vec<u8> {
     let target = endpoint.target(path_and_query);
     format!(
-        "GET {target} HTTP/1.1\r\nHost: {}\r\nAccept: application/json\r\nUser-Agent: wirebody-mcp/{}\r\nConnection: keep-alive\r\n\r\n",
+        "GET {target} HTTP/1.1\r\nHost: {}\r\nAccept: application/json\r\nUser-Agent: healthkite-mcp/{}\r\nConnection: keep-alive\r\n\r\n",
         endpoint.authority(),
         env!("CARGO_PKG_VERSION")
     )

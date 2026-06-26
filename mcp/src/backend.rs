@@ -1,17 +1,17 @@
 use crate::config::Config;
 use crate::discovery;
 use crate::http::{HttpError, HttpResponse, HttpTransport, PskHttpConnection, PskMaterial};
-use crate::wirebody::WirebodyClient;
+use crate::healthkite::HealthKiteClient;
 use parking_lot::Mutex;
 use std::sync::Arc;
 
-pub fn client_from_config(config: Config) -> WirebodyClient {
+pub fn client_from_config(config: Config) -> HealthKiteClient {
     let description = format!(
         "Bonjour service {}.{}",
         config.keys.instance_label(),
         config.service_type.trim_start_matches('.')
     );
-    WirebodyClient::new(description, Arc::new(DiscoveringTransport::new(config)))
+    HealthKiteClient::new(description, Arc::new(DiscoveringTransport::new(config)))
 }
 
 struct DiscoveringTransport {
@@ -40,14 +40,14 @@ impl HttpTransport for DiscoveringTransport {
                 Ok(response) => return Ok(response),
                 Err(error) => {
                     eprintln!(
-                        "wirebody-mcp: cached Wirebody connection failed; reconnecting: {error}"
+                        "healthkite-mcp: cached HealthKite MCP connection failed; reconnecting: {error}"
                     );
                     *connection = None;
                 }
             }
         }
 
-        let endpoint = discovery::discover_wirebody_endpoint(
+        let endpoint = discovery::discover_healthkite_endpoint(
             &self.config.service_type,
             &self.config.keys,
             self.config.discovery_timeout,
